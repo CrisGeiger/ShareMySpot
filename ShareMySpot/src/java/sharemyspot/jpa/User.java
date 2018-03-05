@@ -29,13 +29,14 @@ public class User implements Serializable {
     
     @Column(name = "USERNAME", length = 64)
     @NotNull("Der Name muss ausgefüllt sein")
-    @Size(min = 3, max = 64, message = "Name muss zwischen 3 und 64 Zeichen besitzen")
+    @Size(min = 3, max = 64, message = "Username muss zwischen 3 und 64 Zeichen besitzen")
     private String username;
     
     public class Password {
     @Size(min = 6, max = 64, message = "Das Passwort muss zwischen sechs und 64 Zeichen lang sein.")
     public String password = "";
     }
+    
     
     @Transient
     private final Password password = new Password();
@@ -44,7 +45,36 @@ public class User implements Serializable {
     @NotNull(message = "Das Passwort darf nicht leer sein.")
     private String passwordHash;
     
-    @Column(name = "LASTNAME")
+    @Column(name = "LASTNAME", length = 64)
+    @NotNull(message = "Der Nachname darf nicht leer sein")
+    private String nachname;
+    
+    @Column(name = "FIRSTNAME", length = 64)
+    @NotNull(message = "Der Vorname darf nicht leer sein")
+    private String vorname;
+    
+    @Column(name = "PLACE", length = 64)
+    @Size(max = 5)
+    @NotNull(message = "Der Ort darf nicht leer sein")
+    private String ort;
+    
+    @Column(name = "POSTALNUMBER")
+    @NotNull(message = "Die Postleitzahl darf nicht leer sein")
+    private int plz;
+    
+    @Column(name = "ROAD")
+    @NotNull(message = "Die Straße darf nicht leer sein")
+    private String anschrift;
+    
+    @Column(name = "PHONENUMBER")
+    @NotNull(message = "Die Telefonnummer darf nicht leer sein")
+    private long telefon;
+    
+    @Column(name = "EMAIL")
+    @NotNull(message = "Die Email darf nicht leer sein")
+    private String email;
+    
+    
     
     
 
