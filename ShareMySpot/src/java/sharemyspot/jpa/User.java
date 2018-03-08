@@ -6,6 +6,10 @@
 package sharemyspot.jpa;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,8 +37,8 @@ public class User implements Serializable {
     private String username;
     
     public class Password {
-    @Size(min = 6, max = 64, message = "Das Passwort muss zwischen sechs und 64 Zeichen lang sein.")
-    public String password = "";
+        @Size(min = 6, max = 64, message = "Das Passwort muss zwischen 6 und 64 Zeichen lang sein.")
+        public String password = "";
     }
     
     
@@ -74,23 +78,71 @@ public class User implements Serializable {
     @NotNull(message = "Die Email darf nicht leer sein")
     private String email;
     
-    
-    
-    
 
-    public String getUserName() {
+    //<editor-fold defaultstate="collapsed" desc="Setter und Getter">
+    public String getUsername() {
         return username;
     }
-
-    public void setUserName(String username) {
+    
+    public void setUsername(String username) {
         this.username = username;
     }
     
+    public String getNachname() {
+        return nachname;
+    }
     
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
+    }
+    public String getVorname() {
+        return vorname;
+    }
+
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
+    }
+
+    public String getOrt() {
+        return ort;
+    }
+
+    public void setOrt(String ort) {
+        this.ort = ort;
+    }
+
+    public int getPlz() {
+        return plz;
+    }
+
+    public void setPlz(int plz) {
+        this.plz = plz;
+    }
+
+    public String getAnschrift() {
+        return anschrift;
+    }
+
+    public void setAnschrift(String anschrift) {
+        this.anschrift = anschrift;
+    }
+
+    public long getTelefon() {
+        return telefon;
+    }
+
+    public void setTelefon(long telefon) {
+        this.telefon = telefon;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
-    
-    
-   
 
     public Long getId() {
         return id;
@@ -99,9 +151,8 @@ public class User implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+    //</editor-fold>
     
     
     
 }
-
