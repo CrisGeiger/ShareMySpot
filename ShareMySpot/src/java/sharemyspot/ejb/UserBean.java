@@ -5,6 +5,9 @@
  */
 package sharemyspot.ejb;
 
+import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,10 +27,15 @@ public class UserBean {
      @PersistenceContext 
      EntityManager em;
      
+    @Resource
+    EJBContext ctx;
+     
+    @RolesAllowed("ShareMySpot-user")
      public void delete(User user){ // Methode zum löschen eines Benutzers
         this.em.remove(user);
      }
      
+    @RolesAllowed("ShareMySpot-user")
      public void update(User user){ // Methode zum Aktualisieren eines Benutzersprofils
          this.em.merge(user);
      }
@@ -38,10 +46,15 @@ public class UserBean {
              throw new SignupException("Benutzer ist bereits vergeben.");
          }
          User user= new User(username,password);
+        user.addToGroup("ShareMySpot-user");
          em.persist(user);
      }
-     public void getCurrentUser(User user){
-         this.em.find(User.class, user);
+     public void getCurrentUser(){
+         this.em.find(User.class, this.ctx.getCallerPrincipal().getName());
+     }
+     
+     public void changePassword(){
+     
      }
      
      /**
