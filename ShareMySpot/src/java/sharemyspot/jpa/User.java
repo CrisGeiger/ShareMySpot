@@ -72,7 +72,7 @@ public class User implements Serializable {
     
     @Column(name = "PHONENUMBER")
     @NotNull(message = "Die Telefonnummer darf nicht leer sein")
-    private long telefon;
+    private String telefon;
     
     @Column(name = "EMAIL")
     @NotNull(message = "Die Email darf nicht leer sein")
@@ -88,6 +88,19 @@ public class User implements Serializable {
         this.username = username;
         this.password.password = password;
         this.passwordHash = this.hashPassword(password);
+    }
+    
+    public User(String username, String password, String nachname, String vorname, String ort, String plz, String anschrift, String telefon, String email) {
+        this.username = username;
+        this.password.password = password;
+        this.passwordHash = this.hashPassword(password);
+        this.nachname = nachname;
+        this.vorname = vorname;
+        this.ort = ort;
+        this.plz = plz;
+        this.anschrift = anschrift;
+        this.telefon = telefon;
+        this.email = email;
     }
     //</editor-fold>
             
@@ -139,11 +152,11 @@ public class User implements Serializable {
         this.anschrift = anschrift;
     }
 
-    public long getTelefon() {
+    public String getTelefon() {
         return telefon;
     }
 
-    public void setTelefon(long telefon) {
+    public void setTelefon(String telefon) {
         this.telefon = telefon;
     }
 
