@@ -64,7 +64,7 @@ public class User implements Serializable {
     
     @Column(name = "POSTALNUMBER")
     @NotNull(message = "Die Postleitzahl darf nicht leer sein")
-    private int plz;
+    private String plz;
     
     @Column(name = "ROAD")
     @NotNull(message = "Die Straße darf nicht leer sein")
@@ -79,6 +79,18 @@ public class User implements Serializable {
     private String email;
     
 
+
+    //<editor-fold defaultstate="collapsed" desc="Konstruktoren">
+    public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password.password = password;
+        this.passwordHash = this.hashPassword(password);
+    }
+    //</editor-fold>
+            
     //<editor-fold defaultstate="collapsed" desc="Setter und Getter">
     public String getUsername() {
         return username;
@@ -111,11 +123,11 @@ public class User implements Serializable {
         this.ort = ort;
     }
 
-    public int getPlz() {
+    public String getPlz() {
         return plz;
     }
 
-    public void setPlz(int plz) {
+    public void setPlz(String plz) {
         this.plz = plz;
     }
 
@@ -152,7 +164,47 @@ public class User implements Serializable {
         this.id = id;
     }
     //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Passwort setzen und prüfen">
+    /**
+     * Berechnet der Hash-Wert zu einem Passwort.
+     *
+     * @param password Passwort
+     * @return Hash-Wert
+     */
+    private String hashPassword(String password) {
+        byte[] hash;
+
+        if (password == null) {
+            password = "";
+        }
+        
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException ex) {
+            hash = "!".getBytes(StandardCharsets.UTF_8);
+        }
+
+        BigInteger bigInt = new BigInteger(1, hash);
+        return bigInt.toString(16);
+    }
+
+
+    public void setPassword(String password) {
+        this.password.password = password;
+        this.passwordHash = this.hashPassword(password);
+    }
+
+   
+    public Password getPassword() {
+        return this.password;
+    }
     
-    
+
+    public boolean checkPassword(String password) {
+        return this.passwordHash.equals(this.hashPassword(password));
+    }
+    //</editor-fold> 
     
 }
