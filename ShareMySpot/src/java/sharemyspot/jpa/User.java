@@ -10,10 +10,15 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -32,7 +37,7 @@ public class User implements Serializable {
     private Long id;
     
     @Column(name = "USERNAME", length = 64)
-    @NotNull("Der Name muss ausgefüllt sein")
+    @NotNull(message = "Der Name muss ausgefüllt sein")
     @Size(min = 3, max = 64, message = "Username muss zwischen 3 und 64 Zeichen besitzen")
     private String username;
     
@@ -77,6 +82,10 @@ public class User implements Serializable {
     @Column(name = "EMAIL")
     @NotNull(message = "Die Email darf nicht leer sein")
     private String email;
+    
+    @OneToMany(mappedBy ="owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    List<Spot> spots = new ArrayList<>();
+    
     
 
 
