@@ -77,7 +77,7 @@ public class SpotBean extends EntityBean<Spot, Long> {
         //Suche nach PLZ
         if (plz != null){
             query.where(cd.equal(from.get("plz"), plz));
-        
+        }
         
         return em.createQuery(query).getResultList();
     }
