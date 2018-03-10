@@ -49,6 +49,7 @@ public class UserBean {
       * 
       * @param username
       * @param password
+      * @param password2
       * @param nachname
       * @param vorname
       * @param ort
@@ -56,14 +57,17 @@ public class UserBean {
       * @param anschrift
       * @param telefon
       * @param email
-      * @throws sharemyspot.ejb.UserBean.SignupException 
+      * @throws sharemyspot.ejb.UserBean.UsernameException
+      * @throws sharemyspot.ejb.UserBean.PasswordException
+    
       */
-     public void registration(String username,String password,String password2,String nachname,String vorname,String ort,String plz,String anschrift,String telefon,String email)throws SignupException{
+     public void registration(String username,String password,String password2,String nachname,String vorname,String ort,String plz,String anschrift,String telefon,String email)
+             throws UsernameException, PasswordException{
          
-         if(em.find(User.class,username)!=null){
+         if(em.find(User.class,username)!= null){
              throw new UsernameException("Benutzer ist bereits vergeben.");
          }
-         if(password!=password2){
+         if(!password.equals(password2)) {
              throw new PasswordException("Die Passwörter stimmen nicht überein.");
          }
          
@@ -85,6 +89,8 @@ public class UserBean {
      
      /**
      * Password ändern, wenn man eingeloggt ist
+     * @param username
+     * @param email
      */
      public void changePassword(String username,String email){
            

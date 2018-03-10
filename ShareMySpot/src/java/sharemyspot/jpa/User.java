@@ -13,11 +13,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -85,6 +88,17 @@ public class User implements Serializable {
     
     @OneToMany(mappedBy ="owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Spot> spots = new ArrayList<>();
+    
+    @ElementCollection
+    @CollectionTable(
+            name = "SMS_USER_GROUP",
+            joinColumns = @JoinColumn(name = "USERNAME")
+    )
+    
+    @Column(name = "GROUPNAME")
+    List<String> groups = new ArrayList<>();
+    
+    
     
     
 
@@ -228,5 +242,40 @@ public class User implements Serializable {
         return this.passwordHash.equals(this.hashPassword(password));
     }
     //</editor-fold> 
+ 
+    //<editor-fold defaultstate="collapsed" desc="Zuordnung zu Benutzergruppen">
+    /**
+     * @return Eine unveränderliche Liste aller Benutzergruppen
+     */
+    public List<String> getGroups() {
+        List<String> groupsCopy = new ArrayList<>();
+
+        this.groups.forEach((groupname) -> {
+            groupsCopy.add(groupname);
+        });
+
+        return groupsCopy;
+    }
+
+    /**
+     * Fügt den Benutzer einer weiteren Benutzergruppe hinzu.
+     *
+     * @param groupname Name der Benutzergruppe
+     */
+    public void addToGroup(String groupname) {
+        if (!this.groups.contains(groupname)) {
+            this.groups.add(groupname);
+        }
+    }
+
+    /**
+     * Entfernt den Benutzer aus der übergebenen Benutzergruppe.
+     *
+     * @param groupname Name der Benutzergruppe
+     */
+    public void removeFromGroup(String groupname) {
+        this.groups.remove(groupname);
+    }
+    //</editor-fold>
     
 }
