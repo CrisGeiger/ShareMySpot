@@ -40,30 +40,77 @@ public class UserBean {
          this.em.merge(user);
      }
      
-     public void signup(String username,String password)throws SignupException{
+     /**
+      * Die signup-Methode wird für die Registrierung des Benutzers mit dessen Personaldaten genutzt.
+      * In der Methode wird zuerst geprüft, ob der Benutzer schon existiert, wenn ja, wird eine Benachrichtigung(SignupException)
+      * dem Anwender angezeigt. Wenn der Benutzername noch nicht im System vorhanden ist,
+      * werden die folgenden Parameter an den User-Konstruktor weitergegeben. 
+      * Dadurch wird ein neuer User erstellt.
+      * 
+      * @param username
+      * @param password
+      * @param nachname
+      * @param vorname
+      * @param ort
+      * @param plz
+      * @param anschrift
+      * @param telefon
+      * @param email
+      * @throws sharemyspot.ejb.UserBean.SignupException 
+      */
+     public void registration(String username,String password,String password2,String nachname,String vorname,String ort,String plz,String anschrift,String telefon,String email)throws SignupException{
          
          if(em.find(User.class,username)!=null){
-             throw new SignupException("Benutzer ist bereits vergeben.");
+             throw new UsernameException("Benutzer ist bereits vergeben.");
          }
-         User user= new User(username,password);
-        user.addToGroup("ShareMySpot-user");
-         em.persist(user);
+         if(password!=password2){
+             throw new PasswordException("Die Passwörter stimmen nicht überein.");
+         }
+         
+         User user= new User(username,password,nachname,vorname,ort,plz,anschrift,telefon,email);
+         user.addToGroup("ShareMySpot-user");
+         this.em.persist(user);
+     }
+     /**
+      * Normales Einloggenn
+      * @param username
+      * @param password 
+      */
+     public void signup(String username,String password){
+     
      }
      public void getCurrentUser(){
          this.em.find(User.class, this.ctx.getCallerPrincipal().getName());
      }
      
-     public void changePassword(){
-     
+     /**
+     * Password ändern, wenn man eingeloggt ist
+     */
+     public void changePassword(String username,String email){
+           
+     }
+     /**
+      * Password ändern, wenn man noch nicht eingeloggt ist.
+      * @param username
+      * @param email 
+      */
+     public void signupchangePassword(String username,String email){
+           
      }
      
      /**
       * selbstgeschriebene SignupException erbt von Exception und 
       * dient als Ausnahme für die Fehlermeldung beim Registrieren 
       */
-     public class SignupException extends Exception{
+     public class UsernameException extends Exception{
      
-         public SignupException(String message){
+         public UsernameException(String message){
+             super(message);
+         }
+     }
+     
+     public class PasswordException extends Exception{
+         public PasswordException(String message){
              super(message);
          }
      }
