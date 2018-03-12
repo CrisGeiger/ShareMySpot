@@ -30,6 +30,18 @@ public class SpotBean extends EntityBean<Spot, Long> {
     public SpotBean(){
         super(Spot.class);
     }
+    
+        /**
+     * Alle Aufgaben eines Benutzers, nach Fälligkeit sortiert zurückliefern.
+     * @param username Benutzername
+     * @return Alle Aufgaben des Benutzers
+     */
+    public List<Spot> findByUsername(String username) {
+        return em.createQuery("SELECT t FROM Spot t WHERE t.owner.username = :username")
+                 .setParameter("username", username)
+                 .getResultList();
+    }
+    
 /**
      * Suche nach Parkplätzen anhand ihrer Kategorie, Status, PLZ, Ort und Eigentümer
      * @param owner
@@ -52,7 +64,7 @@ public class SpotBean extends EntityBean<Spot, Long> {
     
         //Suche nach Text
         if (search != null && !search.trim().isEmpty()){
-            query.where(cd.like(from.get("shortText"), "%" + search + "%"));
+            query.where(cd.like(from.get("beschreibung"), "%" + search + "%"));
         }
         
         //Suche nach Kategorie
@@ -74,10 +86,12 @@ public class SpotBean extends EntityBean<Spot, Long> {
         if (ort != null){
             query.where(cd.equal(from.get("ort"), ort));
         }
+        
         //Suche nach PLZ
         if (plz != null){
             query.where(cd.equal(from.get("plz"), plz));
         }
+        
         
         return em.createQuery(query).getResultList();
     }

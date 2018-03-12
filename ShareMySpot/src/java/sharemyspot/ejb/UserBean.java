@@ -22,10 +22,10 @@ import sharemyspot.jpa.User;
          */
   
 @Stateless
-public class UserBean {
+public class UserBean{
     
-     @PersistenceContext 
-     EntityManager em;
+    @PersistenceContext 
+    EntityManager em;
      
     @Resource
     EJBContext ctx;
@@ -41,7 +41,7 @@ public class UserBean {
      }
      
      /**
-      * Die signup-Methode wird für die Registrierung des Benutzers mit dessen Personaldaten genutzt.
+      * Die registration-Methode wird für die Registrierung des Benutzers mit dessen Personaldaten genutzt.
       * In der Methode wird zuerst geprüft, ob der Benutzer schon existiert, wenn ja, wird eine Benachrichtigung(SignupException)
       * dem Anwender angezeigt. Wenn der Benutzername noch nicht im System vorhanden ist,
       * werden die folgenden Parameter an den User-Konstruktor weitergegeben. 
@@ -73,18 +73,12 @@ public class UserBean {
          
          User user= new User(username,password,nachname,vorname,ort,plz,anschrift,telefon,email);
          user.addToGroup("ShareMySpot-user");
-         this.em.persist(user);
+         em.persist(user);
      }
-     /**
-      * Normales Einloggenn
-      * @param username
-      * @param password 
-      */
-     public void signup(String username,String password){
+
      
-     }
-     public void getCurrentUser(){
-         this.em.find(User.class, this.ctx.getCallerPrincipal().getName());
+     public User getCurrentUser(){
+         return this.em.find(User.class, this.ctx.getCallerPrincipal().getName());
      }
      
      /**
@@ -92,17 +86,20 @@ public class UserBean {
      * @param username
      * @param email
      */
-     public void changePassword(String username,String email){
-           
-     }
+     @RolesAllowed("ShareMySpot-user")
+    public void changePassword(User user, String oldPassword, String newPassword) throws InvalidCredentialsException {
+        if (user == null || !user.checkPassword(oldPassword)) {
+            throw new InvalidCredentialsException("Benutzername oder Passwort sind falsch.");
+        }
+
+        user.setPassword(newPassword);
+    }
+    
      /**
       * Password ändern, wenn man noch nicht eingeloggt ist.
       * @param username
       * @param email 
       */
-     public void signupchangePassword(String username,String email){
-           
-     }
      
      /**
       * selbstgeschriebene SignupException erbt von Exception und 
@@ -120,4 +117,11 @@ public class UserBean {
              super(message);
          }
      }
+     
+     public class InvalidCredentialsException extends Exception {
+
+        public InvalidCredentialsException(String message) {
+            super(message);
+        }
+    }
 }
