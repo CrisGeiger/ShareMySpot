@@ -22,23 +22,29 @@ import sharemyspot.jpa.User;
          */
   
 @Stateless
-public class UserBean{
-    
+public class UserBean extends EntityBean<User, Long> {
+    public UserBean() {
+            super(User.class);
+                    }
+            
     @PersistenceContext 
     EntityManager em;
      
     @Resource
     EJBContext ctx;
-     
+    
+    @Override
     @RolesAllowed("ShareMySpot-user")
-     public void delete(User user){ // Methode zum löschen eines Benutzers
-        this.em.remove(user);
-     }
-     
+    public void delete(User user){ // Methode zum löschen eines Benutzers
+       this.em.remove(user);
+    }
+    
+    @Override
     @RolesAllowed("ShareMySpot-user")
-     public void update(User user){ // Methode zum Aktualisieren eines Benutzersprofils
-         this.em.merge(user);
-     }
+    public User update(User user){ // Methode zum Aktualisieren eines Benutzersprofils
+       this.em.merge(user);
+       return user;
+    }
      
      /**
       * Die registration-Methode wird für die Registrierung des Benutzers mit dessen Personaldaten genutzt.
