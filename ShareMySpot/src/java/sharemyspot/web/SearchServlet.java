@@ -6,7 +6,6 @@
 package sharemyspot.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -17,8 +16,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import sharemyspot.ejb.SpotBean;
-import sharemyspot.jpa.Category;
+import sharemyspot.ejb.ValidationBean;
 import sharemyspot.jpa.Spot;
 
 /**
@@ -29,8 +29,10 @@ import sharemyspot.jpa.Spot;
 public class SearchServlet extends HttpServlet {
 
     @EJB
-    SpotBean SpotBean;
+    SpotBean spotBean;
     
+    @EJB
+    ValidationBean validationBean;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -71,35 +73,68 @@ public class SearchServlet extends HttpServlet {
         
         request.setCharacterEncoding("utf-8");
         
-        List<String> fehler= new ArrayList<>();
+        List<String> error= new ArrayList<>();
+        
+        /**boolean correctStartDate=false;// alle anderen Werte sind keine Pflicht einzugeben oder haben eine Message
+        boolean correctStartTime=false;
+        boolean correctEndDate=false;
+        boolean correctEndTime=false;
+ 
+       
+        */boolean correctKategory=false;
         
         
         String startDate=request.getParameter("search_startDate");
         String startTime=request.getParameter("search_startTime");
         String endDate=request.getParameter("search_endDate");
         String endTime=request.getParameter("search_endTime");
-        String ort=request.getParameter("search_ort");
+        String place=request.getParameter("search_place");
         String plz=request.getParameter("search_plz");
-        String anschrift=request.getParameter("search_anschrift");
-        String kategorie=request.getParameter("search_kategorie");
+        String adresse=request.getParameter("search_adresse"); // Abändern, wenn Attribute street vorhanden
+        String kategory=request.getParameter("search_kategory");
         
         
-        Date duestartDate = WebUtils.parseDate(startDate);
-        Time duestartTime = WebUtils.parseTime(startTime);
+        Date dueStartDate = WebUtils.parseDate(startDate);
+        Time dueStartTime = WebUtils.parseTime(startTime);
         
-        Date dueendDate = WebUtils.parseDate(endDate);
-        Time dueendTime = WebUtils.parseTime(endTime);
-        if (kategorie != null && !kategorie.trim().isEmpty()) {
-            try {
-                
-            } 
-            catch (IllegalArgumentException ex) {
-                fehler.add("Die ausgewählte Kategorie ist nicht vorhanden.");
-            }
-         
+        Date dueEndDate = WebUtils.parseDate(endDate);
+        Time dueEndTime = WebUtils.parseTime(endTime);
+        
+        /**Spot spot = new Spot(dueStartDate, dueStartTime,dueEndDate,dueEndTime,place,plz,adresse,kategory);
+        List<String> errors = this.validationBean.validate(spot);
+        this.validationBean.validate(spot, errors);
+
+         if (errors.isEmpty()) {
+            this.spotBean.search(spot);
         }
+
+        // Weiter zur nächsten Seite
+        if (errors.isEmpty()) {
+            // Keine Fehler: neue Seite aufrufen
+            response.sendRedirect(WebUtils.appUrl(request, "/app/spotlist/"));
+        } else {
+            // Fehler: Formuler erneut anzeigen
+            FormValues formValues = new FormValues();
+            formValues.setValues(request.getParameterMap());
+            formValues.setErrors(errors);
+
+            HttpSession session = request.getSession();
+            session.setAttribute("spotList_form", formValues);
+
+            response.sendRedirect(request.getRequestURI());
+        }
+       /**if(!startTime.trim().isEmpty()) {
+            if(duestartTime!=null){
+               correctStartTime=true;
+           }
+            else{
+              error.add("Bitte geben Sie das StartZeit im Format HH:mm:ss ein.");
+            }
+        }
+        */
+       
+        
+        
+        
     }
-
-   
-
 }
