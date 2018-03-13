@@ -103,15 +103,18 @@ public class SearchServlet extends HttpServlet {
         /**Spot spot = new Spot(dueStartDate, dueStartTime,dueEndDate,dueEndTime,place,plz,adresse,kategory);
         List<String> errors = this.validationBean.validate(spot);
         this.validationBean.validate(spot, errors);
-
+        
+        List<Spot> freeSpots;
          if (errors.isEmpty()) {
-            this.spotBean.search(spot);
+            freeSpots=this.spotBean.search(spot);
+            request.setAttribute("freeSpots", freeSpots);
         }
 
         // Weiter zur nächsten Seite
         if (errors.isEmpty()) {
             // Keine Fehler: neue Seite aufrufen
-            response.sendRedirect(WebUtils.appUrl(request, "/app/spotlist/"));
+            // Anfrage an die JSP weiterleiten
+            request.getRequestDispatcher("/WEB-INF/app/Spot_list.jsp").forward(request, response);
         } else {
             // Fehler: Formuler erneut anzeigen
             FormValues formValues = new FormValues();
@@ -119,8 +122,7 @@ public class SearchServlet extends HttpServlet {
             formValues.setErrors(errors);
 
             HttpSession session = request.getSession();
-            session.setAttribute("spotList_form", formValues);
-
+            session.setAttribute("spotList_form", formValues); 
             response.sendRedirect(request.getRequestURI());
         }
        /**if(!startTime.trim().isEmpty()) {
