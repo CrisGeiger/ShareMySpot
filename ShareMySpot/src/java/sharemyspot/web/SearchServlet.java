@@ -23,7 +23,7 @@ import sharemyspot.jpa.Spot;
 
 /**
  *
- * @author Studium
+ * @author Alexander Becker
  */
 @WebServlet(name = "SearchServlet", urlPatterns = {"/SearchServlet"})
 public class SearchServlet extends HttpServlet {
