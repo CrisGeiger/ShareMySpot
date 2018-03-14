@@ -19,7 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sharemyspot.ejb.SpotBean;
 import sharemyspot.ejb.ValidationBean;
+import sharemyspot.jpa.Category;
 import sharemyspot.jpa.Spot;
+import sharemyspot.jpa.SpotStatus;
+
 
 /**
  *
@@ -33,6 +36,7 @@ public class SearchServlet extends HttpServlet {
     
     @EJB
     ValidationBean validationBean;
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -57,33 +61,14 @@ public class SearchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        // Definiert welche Zeichen verarbeitet werden dürfen
+         request.setCharacterEncoding("utf-8");
         
-        request.setCharacterEncoding("utf-8");
+        // Anfrage erfährt, welche Option es zu wählen gibt in den zwei Enums 
+        request.setAttribute("categories", Category.values());
+        request.setAttribute("spotStatus", SpotStatus.values());
         
-        List<String> error= new ArrayList<>();
-        
-        /**boolean correctStartDate=false;// alle anderen Werte sind keine Pflicht einzugeben oder haben eine Message
-        boolean correctStartTime=false;
-        boolean correctEndDate=false;
-        boolean correctEndTime=false;
- 
-       
-        */boolean correctKategory=false;
-        
-        
+        // doGet empfängt die Eingaben und hinterlegt diese in den neuen Variablen
         String startDate=request.getParameter("search_startDate");
         String startTime=request.getParameter("search_startTime");
         String endDate=request.getParameter("search_endDate");
@@ -91,22 +76,66 @@ public class SearchServlet extends HttpServlet {
         String place=request.getParameter("search_place");
         String plz=request.getParameter("search_plz");
         String adresse=request.getParameter("search_adresse"); // Abändern, wenn Attribute street vorhanden
-        String kategory=request.getParameter("search_kategory");
+        String kategoryStatus=request.getParameter("search_category");
+        String spotVariante=request.getParameter("search_spotStatus");
+        String description=request.getParameter("search_description");
+        String username=request.getParameter("search_owner");
         
-        
+        // Das eingegbene Datum und die eingegbene Zeit wird versucht in die vorgegebene Form umzuwandeln
         Date dueStartDate = WebUtils.parseDate(startDate);
         Time dueStartTime = WebUtils.parseTime(startTime);
         
         Date dueEndDate = WebUtils.parseDate(endDate);
         Time dueEndTime = WebUtils.parseTime(endTime);
         
-        /**Spot spot = new Spot(dueStartDate, dueStartTime,dueEndDate,dueEndTime,place,plz,adresse,kategory);
-        List<String> errors = this.validationBean.validate(spot);
-        this.validationBean.validate(spot, errors);
+        // Diese Hilfsvariablen dienen dazu, die ausgewählten Values des Enums zu prüfen  
+        Category category=null;
+        SpotStatus spotStatus=null;
         
+        
+        if (kategoryStatus != null) {
+            try {
+                category = Category.valueOf(kategoryStatus);
+            } catch (IllegalArgumentException ex) {
+                category = null;
+            }
+        }
+        
+           if (spotVariante != null) {
+            try {
+                spotStatus = SpotStatus.valueOf(spotVariante);
+            } catch (IllegalArgumentException ex) {
+                spotStatus = null;
+            }
+        }
+        
+        /**Spot spot = new Spot(username, place, plz,adresse,description,category,favorite);
+        *List<String> errors = this.validationBean.validate(spot);
+        this.validationBean.validate(spot, errors);
+        */
+    
+        // Erstellen einer Fehlerliste zum Speichern der Fehler, die am Ende sobald welche existieren ausgegeben werden in einer JSP.
+             List <String>errors = new ArrayList(); // Anwender wird verpflicht egal bei welcher Suche mindestends einen richtigen Zeitraum anzugeben. Das ermöglicht, dass dieser sich ein Gesamtbild des Angebots an Parkplätzen unseres Service anschauen kann
+         if (dueStartDate==null) {
+            errors.add("Das Datum muss dem Format dd.mm.yyyy entsprechen.");
+         }
+         if (dueEndDate==null) {
+            errors.add("Das Datum muss dem Format dd.mm.yyyy entsprechen.");
+         }
+         
+         if (dueStartTime==null) {
+            errors.add("Das Uhrzeit muss dem Format hh.mm.ss entsprechen.");
+         }
+         
+         if (dueEndTime==null) {
+            errors.add("Das Uhrzeit muss dem Format hh.mm.ss entsprechen.");
+         }
+         
+
+        // Die Liste freeSpots empfängt die Ergebnisse, die den Vorgaben der Suche (search) entsprechen. 
         List<Spot> freeSpots;
          if (errors.isEmpty()) {
-            freeSpots=this.spotBean.search(spot);
+            freeSpots=this.spotBean.search(description, username,place,plz,adresse,spotStatus, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
             request.setAttribute("freeSpots", freeSpots);
         }
 
@@ -122,21 +151,17 @@ public class SearchServlet extends HttpServlet {
             formValues.setErrors(errors);
 
             HttpSession session = request.getSession();
-            session.setAttribute("spotList_form", formValues); 
-            response.sendRedirect(request.getRequestURI());
+            session.setAttribute("spotList_form", formValues);// dient als Zwischenspeicher der Fehler
+            request.setAttribute("session",session);
+            // Anfrage mit Fehler an die JSP weiterleiten
+            request.getRequestDispatcher("/WEB-INF/app/Spot_list.jsp").forward(request, response);
         }
-       /**if(!startTime.trim().isEmpty()) {
-            if(duestartTime!=null){
-               correctStartTime=true;
-           }
-            else{
-              error.add("Bitte geben Sie das StartZeit im Format HH:mm:ss ein.");
-            }
-        }
-        */
+
        
         
         
         
     }
+
+    
 }
