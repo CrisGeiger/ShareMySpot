@@ -5,6 +5,8 @@
  */
 package sharemyspot.ejb;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -94,6 +96,22 @@ public class SpotBean extends EntityBean<Spot, Long> {
         
         
         return em.createQuery(query).getResultList();
+    }
+    
+    
+    //Methode die eine neue Liste mit nur Verfügbaren Parkplätzen liefert
+    //Ich bin mir nicht sicher ob diese Methode in die Spot-Klasse muss, bitte prüfen!
+    public List<Spot> updateSearch(List<Spot> spots, Date freeFrom, Date freeTo) {
+        List<Spot> updatedList = new ArrayList<>();
+            for (Spot s : spots) {
+                if (s.getFreeFrom().before(freeTo) && s.getFreeTo().after(freeFrom)) {
+                    updatedList.add(s);
+                    
+                }
+            }
+            
+        return updatedList;
+     
     }
 }
     
