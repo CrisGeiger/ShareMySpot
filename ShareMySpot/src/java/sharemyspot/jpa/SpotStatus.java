@@ -10,14 +10,16 @@ package sharemyspot.jpa;
  * @author cgeiger1
  */
 public enum SpotStatus {
-    FREE, RESERVED;
+    FREE, BOOKED, NOT_AVAILABLE;
     
     public String getLabel() {
         switch (this) {
             case FREE:
                 return "frei";
-            case RESERVED:
+            case BOOKED:
                 return "reserviert";
+            case NOT_AVAILABLE:
+                return "nicht verfügbar";
             default:
                 return this.toString();
         }
