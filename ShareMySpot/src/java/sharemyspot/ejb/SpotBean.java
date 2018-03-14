@@ -32,9 +32,9 @@ public class SpotBean extends EntityBean<Spot, Long> {
     }
     
         /**
-     * Alle Aufgaben eines Benutzers, nach Fälligkeit sortiert zurückliefern.
+     * Alle Parkplätze eines Benutzers
      * @param username Benutzername
-     * @return Alle Aufgaben des Benutzers
+     * @return Alle Parkplätze des Benutzers
      */
     public List<Spot> findByUsername(String username) {
         return em.createQuery("SELECT t FROM Spot t WHERE t.owner.username = :username")

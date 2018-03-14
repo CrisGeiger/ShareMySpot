@@ -31,6 +31,8 @@ import javax.validation.constraints.Size;
  *
  * @author cgeiger1
  */
+
+//geändert am 14.3. von Cristian Geiger: Favoritenliste hinzugefügt
 @Entity
 @Table(name = "SMS_USER")
 public class User implements Serializable {
@@ -97,6 +99,11 @@ public class User implements Serializable {
     
     @Column(name = "GROUPNAME")
     List<String> groups = new ArrayList<>();
+    
+    @Column(name ="FAVOURITELIST")
+    List<Spot> favoriten = new ArrayList<>();
+    
+    
     
     
     
@@ -203,7 +210,7 @@ public class User implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="Passwort setzen und prüfen">
     /**
-     * Berechnet der Hash-Wert zu einem Passwort.
+     * Berechnet den Hash-Wert zu einem Passwort.
      *
      * @param password Passwort
      * @return Hash-Wert

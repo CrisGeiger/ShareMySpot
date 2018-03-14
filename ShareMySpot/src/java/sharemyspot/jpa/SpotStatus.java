@@ -9,6 +9,9 @@ package sharemyspot.jpa;
  *
  * @author cgeiger1
  */
+
+//überarbeitet am 14.3. von Cristian Geiger: Reserved in Booked umgeschrieben und dritte Alternative Not available hinzugefügt
+
 public enum SpotStatus {
     FREE, BOOKED, NOT_AVAILABLE;
     
