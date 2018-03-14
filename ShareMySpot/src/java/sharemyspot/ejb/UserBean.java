@@ -15,14 +15,17 @@ import sharemyspot.jpa.User;
 
 /**
  *
- * @author Studium
+ * @author Alexander Becker: 10.3 - 11.3 Bean erstellt mit allen vorhandenen Methoden außer changePassword,weil ingesamt eine Synchronisation der aktuellen Klasse mit dieser Methode nicht mit GitHub geklappt hat. 
+ * @editor Bastian Schabbach: 11.3 wegen technischen Problemen bei Alexander B. füge Bastian 
+ * die Methode changePassword hinzu und löschte aus kommentierte Methoden  ,
+ * Christian Geiger: 12.3 extends wurde von Christian ergänzt und die Klasse darauf hin angepasst 
  */
         /**
          * Die Userbean bietet verschiedene Methoden, um als Benutzer am Benutzerprofil zu bearbeiten 
          */
   
 @Stateless
-public class UserBean extends EntityBean<User, Long> {
+public class UserBean extends EntityBean<User, Long> {  
     public UserBean() {
             super(User.class);
                     }
