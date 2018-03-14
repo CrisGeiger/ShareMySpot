@@ -6,6 +6,7 @@
 package sharemyspot.jpa;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,6 +25,9 @@ import javax.validation.constraints.Size;
  *
  * @author Budda
  */
+
+//geändert am 14.03. von Cristian Geiger: Zwei Zeitvariablen zur Bestimmung wann ein Parkplatz zur Verfügung steht eingefügt 
+//Konstruktor angepasst und Getter und Setter hinzugefügt
 @Entity
 @Table(name = "SMS_SPOT")
 public class Spot implements Serializable{
@@ -67,12 +73,20 @@ public class Spot implements Serializable{
     
     @Column(name = "FAVORIT")
     private Boolean favorite = false;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date freeFrom = new Date();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date freeTo = new Date();
+    
+    
 
 //<editor-fold defaultstate="collapsed" desc="Konstruktoren">
     public Spot() {
     }
 
-    public Spot(User owner, String ort, int plz, String anschrift, String beschreibung,Category category, boolean favorite) {
+    public Spot(User owner, String ort, int plz, String anschrift, String beschreibung,Category category, boolean favorite, Date freeFrom, Date freeTo) {
         this.owner = owner;
         this.category = category;
         this.plz = plz;
@@ -80,6 +94,8 @@ public class Spot implements Serializable{
         this.anschrift = anschrift;
         this.beschreibung = beschreibung;
         this.favorite = favorite;
+        this.freeFrom = freeFrom;
+        this.freeTo = freeTo;
     }
     //</editor-fold>
 
@@ -146,6 +162,22 @@ public class Spot implements Serializable{
     
     public void setFavorite(Boolean favorite){
         this.favorite = favorite;
+    }
+    
+    public Date getFreeFrom() {
+        return freeFrom;
+    }
+    
+    public void setFreeFrom(Date freeFrom) {
+        this.freeFrom = freeFrom;
+    }
+    
+    public Date getFreeTo() {
+        return freeTo;
+    }
+    
+    public void setFreeTo(Date freeTo) {
+        this.freeTo = freeTo;
     }
     //</editor-fold>
 }
