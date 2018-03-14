@@ -25,7 +25,7 @@ import sharemyspot.jpa.SpotStatus;
 
 
 /**
- *
+ * Das Servlet ermöglicht nach beliebigen Vorgaben Spots zu suchen, die nicht reseriert sind. Es gibt keine extra Suche deshalb, um nochmal seperat für die Buchung Suchen zu können. Da es die Benutzerfreundlichkeit wegen vielleicht doppelten Suchen  nur senken würde.
  * @author Alexander Becker
  */
 @WebServlet(name = "SearchServlet", urlPatterns = {"/SearchServlet"})
@@ -77,7 +77,7 @@ public class SearchServlet extends HttpServlet {
         String plz=request.getParameter("search_plz");
         String adresse=request.getParameter("search_adresse"); // Abändern, wenn Attribute street vorhanden
         String kategoryStatus=request.getParameter("search_category");
-        String spotVariante=request.getParameter("search_spotStatus");
+        //String spotVariante=request.getParameter("search_spotStatus");
         String description=request.getParameter("search_description");
         String username=request.getParameter("search_owner");
         
@@ -101,14 +101,14 @@ public class SearchServlet extends HttpServlet {
             }
         }
         
-           if (spotVariante != null) {
+        /**   if (spotVariante != null) {
             try {
                 spotStatus = SpotStatus.valueOf(spotVariante);
             } catch (IllegalArgumentException ex) {
                 spotStatus = null;
             }
         }
-        
+        */
         /**Spot spot = new Spot(username, place, plz,adresse,description,category,favorite);
         *List<String> errors = this.validationBean.validate(spot);
         this.validationBean.validate(spot, errors);
@@ -123,20 +123,22 @@ public class SearchServlet extends HttpServlet {
             errors.add("Das Datum muss dem Format dd.mm.yyyy entsprechen.");
          }
          
-         if (dueStartTime==null) {
+        /** if (dueStartTime==null) {
             errors.add("Das Uhrzeit muss dem Format hh.mm.ss entsprechen.");
          }
          
          if (dueEndTime==null) {
             errors.add("Das Uhrzeit muss dem Format hh.mm.ss entsprechen.");
          }
-         
+         */
 
         // Die Liste freeSpots empfängt die Ergebnisse, die den Vorgaben der Suche (search) entsprechen. 
+        List<Spot> ListSpots;
         List<Spot> freeSpots;
          if (errors.isEmpty()) {
-            freeSpots=this.spotBean.search(description, username,place,plz,adresse,spotStatus, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
-            request.setAttribute("freeSpots", freeSpots);
+            ListSpots=this.spotBean.search(description, username,place,plz,adresse, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
+            freeSpots=this.spotBean.updateSearch( ListSpots,dueStartDate, dueEndDate); 
+            request.setAttribute("freeSpots",freeSpots );
         }
 
         // Weiter zur nächsten Seite
