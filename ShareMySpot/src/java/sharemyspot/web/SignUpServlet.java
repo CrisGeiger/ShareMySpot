@@ -8,6 +8,8 @@ package sharemyspot.web;
 /**
  *
  * @author Budda
+ * Änderung 15.03.18: Becker: Bezeichnungen von ort,anschrift,
+ * telefon,vorname,nachname zu englischen Begriffen umgewandelt 
  */
 
 import java.io.IOException;
@@ -60,12 +62,12 @@ public class SignUpServlet extends HttpServlet {
         String username = request.getParameter("signup_username");
         String password1 = request.getParameter("signup_password1");
         String password2 = request.getParameter("signup_password2");
-        String nachname = request.getParameter("signup_nachname");
-        String vorname = request.getParameter("signup_vorname");
-        String anschrift = request.getParameter("signup_anschrift");
+        String lastName = request.getParameter("signup_lastname");
+        String firstName = request.getParameter("signup_firstname");
+        String adresse = request.getParameter("signup_adresse");
         String plz = request.getParameter("signup_plz");
-        String ort = request.getParameter("signup_ort");
-        String telefon = request.getParameter("signup_telefon");
+        String place = request.getParameter("signup_place");
+        String phoneNumber = request.getParameter("signup_phonenumber");
         String email = request.getParameter("signup_email");
         
         /*int iplz=00000;
@@ -77,7 +79,7 @@ public class SignUpServlet extends HttpServlet {
         }*/
         
         // Eingaben prüfen
-        User user = new User(username, password1, nachname, vorname,ort, plz,anschrift, telefon, email);
+        User user = new User(username, password1, lastName, firstName,place, plz,adresse, phoneNumber, email);
         List<String> errors = this.validationBean.validate(user);
         this.validationBean.validate(user.getPassword(), errors);
         
@@ -88,7 +90,7 @@ public class SignUpServlet extends HttpServlet {
         // Neuen Benutzer anlegen
         if (errors.isEmpty()) {
             try {
-                this.userBean.registration(username, password1, password2, nachname, vorname, ort, plz, anschrift, telefon, email);
+                this.userBean.registration(username, password1, password2, lastName, firstName, place, plz, adresse, phoneNumber, email);
             } catch (UserBean.UsernameException ex) {
                 errors.add(ex.getMessage());
             }
