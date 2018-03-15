@@ -24,10 +24,14 @@ import javax.validation.constraints.Size;
 /**
  *
  * @author Budda
+ * 
  */
-
 //geändert am 14.03. von Cristian Geiger: Zwei Zeitvariablen zur Bestimmung wann ein Parkplatz zur Verfügung steht eingefügt 
 //Konstruktor angepasst und Getter und Setter hinzugefügt
+/** Änderung 15.03.18: Becker: Die Variablen Ort zu Place und Beschreibung zu Descrption abgeändert zusätzlich auch in deren Methoden und im Konstruktor 
+ *  Die Anschrift wurde aufgeteilt in ROAD und roadNumber und dazu neue Methoden hinzugefügt und im Konstruktor eingearbeitet 
+ * 
+ */
 @Entity
 @Table(name = "SMS_SPOT")
 public class Spot implements Serializable{
@@ -46,7 +50,7 @@ public class Spot implements Serializable{
     @Column(name = "PLACE", length = 64)
     @NotNull(message = "Ort darf nicht leer sein")
     @Size(min = 3, max = 64, message = "Der Ort muss zw. 3 und 64 Zeichen lang sein")
-    private String ort;
+    private String place;
     
     @Column(name = "POSTALNUMBER", length = 5)
     @NotNull
@@ -56,12 +60,17 @@ public class Spot implements Serializable{
     @Column(name = "ROAD", length = 64)
     @NotNull
     @Size(min = 5, max = 64, message = "Straße musss zw. 5 und 64 Zeichen lang sein")
-    private String anschrift;
+    private String road;
+    
+    @Column (name ="ROADNUMBER", length= 3)
+    @NotNull
+    @Size(min =1,max = 3,message ="Die Hausnummer muss zw. 1 und 3 Zeichen lanf sein")
+    private int roadNumber;
     
     @Column(name = "DESCRIPTION", length = 128)
     @NotNull
-    @Size(min = 4, max = 160, message = "Straße musss zw. 4 und 160 Zeichen lang sein")
-    private String beschreibung;
+    //@Size(min = 4, max = 160, message = "Straße musss zw. 4 und 160 Zeichen lang sein")
+    private String description;
     
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -86,13 +95,14 @@ public class Spot implements Serializable{
     public Spot() {
     }
 
-    public Spot(User owner, String ort, int plz, String anschrift, String beschreibung,Category category, boolean favorite, Date freeFrom, Date freeTo) {
+    public Spot(User owner, String place, int plz, String road,int roadNumber, String description,Category category, boolean favorite, Date freeFrom, Date freeTo) {
         this.owner = owner;
         this.category = category;
         this.plz = plz;
-        this.ort = ort;
-        this.anschrift = anschrift;
-        this.beschreibung = beschreibung;
+        this.place = place;
+        this.road = road;
+        this.roadNumber=roadNumber;
+        this.description = description;
         this.favorite = favorite;
         this.freeFrom = freeFrom;
         this.freeTo = freeTo;
@@ -116,20 +126,28 @@ public class Spot implements Serializable{
         this.owner = owner;
     }
     
-    public String getOrt(){
-        return ort;
+    public String getPlace(){
+        return place;
     }
     
-    public void setOrt(String ort){
-        this.ort = ort;
+    public void setPlace(String place){
+        this.place = place;
     }
     
-    public String getAnschrift(){
-        return anschrift;
+    public String getRoad(){
+        return road;
     }
     
-    public void setAnschrift(String anschrift){
-        this.anschrift = anschrift;
+    public void setRoad(String road){
+        this.road = road;
+    }
+    
+    public void setroadNumber(int roadNumber){
+        this.roadNumber=roadNumber;
+    }
+    
+    public int getroadNumber(){
+        return roadNumber;
     }
     
     public int getPlz(){
@@ -140,12 +158,12 @@ public class Spot implements Serializable{
         this.plz = plz;
     }
     
-    public String getBeschreibung(){
-        return beschreibung;
+    public String getDescription(){
+        return description;
     }
     
-    public void setBeschreibung(String beschreibung){
-        this.beschreibung = beschreibung;
+    public void setDescription(String description){
+        this.description = description;
     }
     
     public Category getCategory(){
