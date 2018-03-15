@@ -71,7 +71,7 @@ public class SpotBean extends EntityBean<Spot, Long> {
     
         //Suche nach Text
         if (description != null && !description.trim().isEmpty()){
-            query.where(cd.like(from.get("beschreibung"), "%" + description + "%"));
+            query.where(cd.like(from.get("description"), "%" + description + "%"));
         }
         
         //Suche nach Kategorie
