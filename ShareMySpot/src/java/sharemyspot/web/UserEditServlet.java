@@ -8,6 +8,7 @@ package sharemyspot.web;
 /**
  *
  * @author Budda
+ * Änderung 15.03.18: Becker: Bezeichnungen von ort,anschrift,telefon,vorname,nachname zu englischen Begriffen umgewandelt 
  */
 import sharemyspot.ejb.ValidationBean;
 import sharemyspot.ejb.UserBean;
@@ -66,12 +67,12 @@ public class UserEditServlet extends HttpServlet {
         String oldpw = request.getParameter("edit_oldpw");
         String password1 = request.getParameter("signup_password1");
         String password2 = request.getParameter("signup_password2");
-        String nachname = request.getParameter("signup_nachname");
-        String vorname = request.getParameter("signup_vorname");
-        String anschrift = request.getParameter("signup_anschrift");
+        String lastName = request.getParameter("signup_lastName");
+        String firstName = request.getParameter("signup_firstName");
+        String adresse = request.getParameter("signup_adresse");
         String plz = request.getParameter("signup_plz");
-        String ort = request.getParameter("signup_ort");
-        String telefon = request.getParameter("signup_telefon");
+        String place = request.getParameter("signup_place");
+        String phoneNumber= request.getParameter("signup_phoneNumber");
         String email = request.getParameter("signup_email");
        
 //        int iplz=00000;
@@ -83,7 +84,7 @@ public class UserEditServlet extends HttpServlet {
 //        }
         
         // Eingaben prüfen
-        User user = new User(username, password1, nachname, vorname, ort, plz, anschrift, telefon, email);
+        User user = new User(username, password1, lastName, firstName, place, plz, adresse, phoneNumber, email);
         List<String> errors = this.validationBean.validate(user);
         this.validationBean.validate(user.getPassword(), errors);
         
@@ -122,12 +123,12 @@ public class UserEditServlet extends HttpServlet {
             user.getUsername()
         });
 
-        values.put("edit_nachname", new String[]{
-            user.getNachname()
+        values.put("edit_lastname", new String[]{
+            user.getLastName()
         });
         
-        values.put("edit_vorname", new String[]{
-            user.getVorname()
+        values.put("edit_firstname", new String[]{
+            user.getFirstName()
         });
         
         values.put("edit_password1", new String[]{
@@ -142,20 +143,20 @@ public class UserEditServlet extends HttpServlet {
             "default"
         });
 
-        values.put("edit_anschrift", new String[]{
-            user.getAnschrift()
+        values.put("edit_adresse", new String[]{
+            user.getAdresse()
         });
 
         values.put("edit_plz", new String[]{
             user.getPlz()
         });
 
-        values.put("edit_ort", new String[]{
-            user.getOrt()
+        values.put("edit_place", new String[]{
+            user.getPlace()
         });
         
-        values.put("edit_telefon", new String[]{
-            user.getTelefon()
+        values.put("edit_phoneNumber", new String[]{
+            user.getPhoneNumber()
         });
         
         values.put("edit_email", new String[]{

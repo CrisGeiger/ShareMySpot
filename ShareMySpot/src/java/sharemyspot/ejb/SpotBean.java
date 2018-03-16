@@ -21,6 +21,7 @@ import sharemyspot.jpa.User;
 /**
  *
  * @author JU_FI
+ * @editor Becker
  *
  * Einfache EJB mit den üblichen CRUD-Methoden für Parkplätze.
  */
@@ -47,14 +48,18 @@ public class SpotBean extends EntityBean<Spot, Long> {
 /**
      * Suche nach Parkplätzen anhand ihrer Kategorie, Status, PLZ, Ort und Eigentümer
      * @param owner
-     * @param ort 
+     * @param place
      * @param plz 
      * @param status
      * @param category
-     * @param search
+     * @param description
      * @return Liste mit den gefundenen Parkplätzen
      */
-    public List<Spot> search(String search, User owner, Spot ort, Spot plz, SpotStatus status, Category category){
+    /**Änderung 15.03.18: Becker: - Deklaratioin der Parameter place,plz der Methode search geändert
+    *von Deklaration Spot und street als Parameter hinzugefügt  
+    * - Bezeichnung ort zu place und search zu description in der gesamten Methode wurde abgeändert.
+    */
+      public List<Spot> search(String description, User owner, String place, String plz,String street, SpotStatus status, Category category){
         
         //Hilfsojekt zum Bauen der Query
             CriteriaBuilder cd = this.em.getCriteriaBuilder();
@@ -65,8 +70,8 @@ public class SpotBean extends EntityBean<Spot, Long> {
             query.select(from);
     
         //Suche nach Text
-        if (search != null && !search.trim().isEmpty()){
-            query.where(cd.like(from.get("beschreibung"), "%" + search + "%"));
+        if (description != null && !description.trim().isEmpty()){
+            query.where(cd.like(from.get("description"), "%" + description + "%"));
         }
         
         //Suche nach Kategorie
@@ -85,20 +90,25 @@ public class SpotBean extends EntityBean<Spot, Long> {
         }
         
         //Suche nach Ort
-        if (ort != null){
-            query.where(cd.equal(from.get("ort"), ort));
+        if (place != null){
+            query.where(cd.equal(from.get("place"), place));
         }
         
         //Suche nach PLZ
         if (plz != null){
             query.where(cd.equal(from.get("plz"), plz));
         }
+        //Änderung 15.03.18: Becker: street als zu seuchender Weg hinzugefügt
+        //Suche nach Street
+        if (street != null){  
+            query.where(cd.equal(from.get("street"), street));
+        }
         
         
         return em.createQuery(query).getResultList();
     }
     
-    
+    //Änderung 14.03.18:Geiger: Methode updateSearch hinzugefügt
     //Methode die eine neue Liste mit nur Verfügbaren Parkplätzen liefert
     //Ich bin mir nicht sicher ob diese Methode in die Spot-Klasse muss, bitte prüfen!
     public List<Spot> updateSearch(List<Spot> spots, Date freeFrom, Date freeTo) {

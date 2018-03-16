@@ -33,6 +33,11 @@ import javax.validation.constraints.Size;
  */
 
 //geändert am 14.3. von Cristian Geiger: Favoritenliste hinzugefügt
+/**
+ * Änderung 15.03.18: Becker: deutsche Bezeichnungen geändert in englische Namen
+ * zugleich im Konstruktor und in deren Methoden 
+ * wie z.B. vorname in firstName, nachname in lastName,telefon in phoneNumber, anschrift in adrese 
+ */
 @Entity
 @Table(name = "SMS_USER")
 public class User implements Serializable {
@@ -61,28 +66,28 @@ public class User implements Serializable {
     
     @Column(name = "LASTNAME", length = 64)
     @NotNull(message = "Der Nachname darf nicht leer sein")
-    private String nachname;
+    private String lastName;
     
     @Column(name = "FIRSTNAME", length = 64)
     @NotNull(message = "Der Vorname darf nicht leer sein")
-    private String vorname;
+    private String firstName;
     
     @Column(name = "PLACE", length = 64)
     @Size(max = 5)
     @NotNull(message = "Der Ort darf nicht leer sein")
-    private String ort;
+    private String place;
     
     @Column(name = "POSTALNUMBER")
     @NotNull(message = "Die Postleitzahl darf nicht leer sein")
     private String plz;
     
-    @Column(name = "ROAD")
+    @Column(name = "Adresse")
     @NotNull(message = "Die Straße darf nicht leer sein")
-    private String anschrift;
+    private String adresse;
     
     @Column(name = "PHONENUMBER")
     @NotNull(message = "Die Telefonnummer darf nicht leer sein")
-    private String telefon;
+    private String phoneNumber;
     
     @Column(name = "EMAIL")
     @NotNull(message = "Die Email darf nicht leer sein")
@@ -120,16 +125,16 @@ public class User implements Serializable {
         this.passwordHash = this.hashPassword(password);
     }
     
-    public User(String username, String password, String nachname, String vorname, String ort, String plz, String anschrift, String telefon, String email) {
+    public User(String username, String password, String lastName, String firstName, String place, String plz, String road, String phoneNumber, String email) {
         this.username = username;
         this.password.password = password;
         this.passwordHash = this.hashPassword(password);
-        this.nachname = nachname;
-        this.vorname = vorname;
-        this.ort = ort;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.place = place;
         this.plz = plz;
-        this.anschrift = anschrift;
-        this.telefon = telefon;
+        this.adresse = adresse;
+        this.phoneNumber = phoneNumber;
         this.email = email;
     }
     //</editor-fold>
@@ -143,27 +148,27 @@ public class User implements Serializable {
         this.username = username;
     }
     
-    public String getNachname() {
-        return nachname;
+    public String getLastName() {
+        return lastName;
     }
     
-    public void setNachname(String nachname) {
-        this.nachname = nachname;
+    public void setNachname(String lastName) {
+        this.lastName = lastName;
     }
-    public String getVorname() {
-        return vorname;
-    }
-
-    public void setVorname(String vorname) {
-        this.vorname = vorname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getOrt() {
-        return ort;
+    public void setVorname(String fistname) {
+        this.firstName = firstName;
     }
 
-    public void setOrt(String ort) {
-        this.ort = ort;
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public String getPlz() {
@@ -174,20 +179,20 @@ public class User implements Serializable {
         this.plz = plz;
     }
 
-    public String getAnschrift() {
-        return anschrift;
+    public String getAdresse() {
+        return adresse;
     }
 
-    public void setAnschrift(String anschrift) {
-        this.anschrift = anschrift;
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
     }
 
-    public String getTelefon() {
-        return telefon;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setTelefon(String telefon) {
-        this.telefon = telefon;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getEmail() {
