@@ -20,6 +20,7 @@ import  sharemyspot.jpa.User;
 /**
  *
  * @author Becker
+ * Servlet dient dazu die BookingListe abzurufen, wenn der User diese anfragt
  */
 @WebServlet(name = "BookingListServlet", urlPatterns = {"/BookingListServlet"})
 public class BookingListServlet extends HttpServlet {
