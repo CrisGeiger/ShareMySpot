@@ -19,7 +19,7 @@ import  sharemyspot.jpa.User;
 
 /**
  *
- * @author Studium
+ * @author Becker
  */
 @WebServlet(name = "BookingListServlet", urlPatterns = {"/BookingListServlet"})
 public class BookingListServlet extends HttpServlet {
