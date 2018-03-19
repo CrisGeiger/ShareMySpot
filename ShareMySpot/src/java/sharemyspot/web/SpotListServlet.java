@@ -121,7 +121,7 @@ public class SpotListServlet extends HttpServlet {
             
         } else {
            ListSpots=this.spotBean.search(description, owner, place, plz, road, roadnumber, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
-           freeSpots=this.spotBean.updateSpotsDate(ListSpots, searchDate); 
+           freeSpots=this.spotBean.updateSpotsDate(ListSpots, dueSearchDate); 
            request.setAttribute("freeSpots",freeSpots ); 
         }
       

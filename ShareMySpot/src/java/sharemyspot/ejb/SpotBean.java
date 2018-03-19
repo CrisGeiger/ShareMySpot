@@ -114,14 +114,35 @@ public class SpotBean extends EntityBean<Spot, Long> {
     
     //Methode um alle verfügbaren Spots anzuzeigen die zu einem gesetzten Datum frei sind
     public List<Spot> updateSpots(List<Spot> spots) {
-        for (Spot s : spots) {
-            
-                
+
+        Date currentDate = new Date();
+                for (Spot s : spots) {
+            if(currentDate.after(s.getFreeFrom()) && currentDate.before(s.getFreeTo())){
+                if(s.getSpotStatus().getLabel().equals("BOOKED")){
+                    spots.remove(s);
+                }
+            }else{
+                spots.remove(s);
+            }
+
         }
         
         return spots;
     }
+    
+    public List<Spot> updateSpotsDate(List<Spot> spots, Date searchDate) {
+        for (Spot s : spots) {
+            if(searchDate.after(s.getFreeFrom()) && searchDate.before(s.getFreeTo())){
+                if(s.getSpotStatus().getLabel().equals("BOOKED")){
+                    spots.remove(s);
+                }
+            }else{
+                spots.remove(s);
+            }
+        }
         
+        return spots;
+    }
      
     
 }
