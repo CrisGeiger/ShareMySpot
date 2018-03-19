@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +23,8 @@ import sharemyspot.ejb.UserBean;
 import sharemyspot.ejb.ValidationBean;
 import sharemyspot.jpa.Spot;
 import sharemyspot.jpa.User;
-import sharemyspot.ejb.CategoryBean;
+import sharemyspot.jpa.Category;
+import sharemyspot.jpa.SpotStatus;
 
 /**
  *
@@ -38,9 +40,6 @@ public class SpotEditServlet extends HttpServlet {
     UserBean userBean;
     
     @EJB
-    CategoryBean categoryBean;
-    
-    @EJB
     ValidationBean validationBean; 
     
     @Override
@@ -50,10 +49,10 @@ public class SpotEditServlet extends HttpServlet {
         User user = this.userBean.getCurrentUser(); 
         
         // Verfügbare Kategorien für die Suchfelder ermitteln
-        request.setAttribute("categories", this.categoryBean.findAllSorted());
+        request.setAttribute("categories", Category.values()); 
+        request.setAttribute("status", SpotStatus.values());
         
         //Zu bearbeitender Parkplatz einlesen
-        
         HttpSession session = request.getSession();
         
         
@@ -103,12 +102,48 @@ public class SpotEditServlet extends HttpServlet {
           String spotRoadNumber = request.getParameter("spot_roadNumber");
           String spotDescription = request.getParameter("spot_description"); 
           String spotCategory = request.getParameter("spot_category");
+          String spotStatus = request.getParameter("spot_status");
           String spotFreeFrom = request.getParameter("spot_freeFrom");
           String spotFreeTo = request.getParameter("spot_freeTo");
           
           Spot spot = this.getRequestedSpot(request);
-      }
+          
+          if (spotCategory != null && !spotCategory.trim().isEmpty()) {
+            try {
+                spot.setCategory(Category.valueOf(spotCategory));
+            } catch (NumberFormatException ex) {
+                // Ungültige oder keine ID mitgegeben
+            }
+           }
+          
+         
+          
+          spot.setPlace(spotPlace);
+          spot.setPlz(spotPlz);
+          spot.setRoad(spotRoad);
+          spot.setroadNumber(Integer.parseInt(spotRoadNumber));
+          spot.setDescription(spotDescription);
+          spot.setFreeFrom(SimpleDateFormat.parse(spotFreeFrom));
+          spot.setFreeTo(SimpleDateFormat.parse(spotFreeTo));
       
+          this.validationBean.validate(spot, errors);
+          
+          // Weiter zur nächsten Seite
+            if (errors.isEmpty()) {
+            // Keine Fehler: Startseite aufrufen
+            response.sendRedirect(WebUtils.appUrl(request, "/app/Startseite/"));
+        } else {
+            // Fehler: Formuler erneut anzeigen
+            FormValues formValues = new FormValues();
+            formValues.setValues(request.getParameterMap());
+            formValues.setErrors(errors);
+
+            HttpSession session = request.getSession();
+            session.setAttribute("spot_form", formValues);
+
+            response.sendRedirect(request.getRequestURI());
+      }
+      }
       /**
      * Aufgerufen in doPost: Vorhandener Spot löschen
      *
@@ -125,7 +160,7 @@ public class SpotEditServlet extends HttpServlet {
            this.spotBean.delete(spot);
            
            //zurück zur Übersicht
-           response.sendRedirect(WebUtils.appUrl(request, "/übersicht"));   
+           response.sendRedirect(WebUtils.appUrl(request, "/app/Startseite"));   
            }
        
       /**
@@ -164,51 +199,7 @@ public class SpotEditServlet extends HttpServlet {
 
         return spot;   
        }
-       
-       /**
-     * Neues FormValues-Objekt erzeugen und mit den Daten eines aus der
-     * Datenbank eingelesenen Datensatzes füllen. Dadurch müssen in der JSP
-     * keine hässlichen Fallunterscheidungen gemacht werden, ob die Werte im
-     * Formular aus der Entity oder aus einer vorherigen Formulareingabe
-     * stammen.
-     *
-     * @param spot Der zu bearbeitende Parkplatz
-     * @return Neues, gefülltes FormValues-Objekt
-     */
-    private FormValues createSpotForm(Spot spot) {
-        Map<String, String[]> values = new HashMap<>();
-
-        if (spot.getCategory() != null) {
-            values.put("spot_category", new String[]{
-                spot.getCategory().toString()
-            });
-        }
-        
-       values.put("spot_place", new String[]{
-            spot.getPlace()
-        });
-
-        values.put("spot_road", new String[]{
-            spot.getRoad()
-        });
-
-        values.put("spot_roadNumer", new String[]{
-            spot.getroadNumber()
-        });
-
-        values.put("spot_plz", new String[]{
-            spot.getPlz()
-        });
-
-        values.put("spot_description", new String[]{
-            spot.getDescription()
-        });
-
-
-        FormValues formValues = new FormValues();
-        formValues.setValues(values);
-        return formValues;
-    }
+     
 }
     
 
