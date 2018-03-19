@@ -108,15 +108,15 @@ public class SpotBean extends EntityBean<Spot, Long> {
         return em.createQuery(query).getResultList();
     }
     
-    
       
       
+      
     
-    //Methode um alle verfügbaren Spots anzuzeigen
+    //Methode um alle verfügbaren Spots anzuzeigen die zu einem gesetzten Datum frei sind
     public List<Spot> updateSpots(List<Spot> spots) {
-        
         for (Spot s : spots) {
             
+                
         }
         
         return spots;

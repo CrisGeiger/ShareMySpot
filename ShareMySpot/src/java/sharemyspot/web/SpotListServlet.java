@@ -74,10 +74,7 @@ public class SpotListServlet extends HttpServlet {
         
         
         // doGet empfängt die Eingaben und hinterlegt diese in den neuen Variablen
-        String startDate=request.getParameter("search_startDate");
-        
-        String endDate=request.getParameter("search_endDate");
-       
+        String searchDate=request.getParameter("search_searchDate");       
         String place = request.getParameter("search_place");
         String plz = request.getParameter("search_plz");
         String road = request.getParameter("search_road");
@@ -87,12 +84,10 @@ public class SpotListServlet extends HttpServlet {
         String searchOwner = request.getParameter("search_owner");
         
         // Das eingegbene Datum und die eingegbene Zeit wird versucht in die vorgegebene Form umzuwandeln
-        Date dueStartDate = WebUtils.parseDate(startDate);
+        Date dueSearchDate = WebUtils.parseDate(searchDate);
         
         
-        Date dueEndDate = WebUtils.parseDate(endDate);
-        
-        
+                
         // Diese Hilfsvariablen dienen dazu, die ausgewählten Values des Enums zu prüfen  
         Category category=null;
         User owner = null;
@@ -114,18 +109,25 @@ public class SpotListServlet extends HttpServlet {
             }
         }
        
-       
-    
-      
-
         // Die Liste freeSpots empfängt die Ergebnisse, die den Vorgaben der Suche (search) entsprechen. 
         List<Spot> ListSpots;
         List<Spot> freeSpots;
+       
+        if (searchDate == null) {
            ListSpots=this.spotBean.search(description, owner, place, plz, road, roadnumber, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
            freeSpots=this.spotBean.updateSpots(ListSpots); 
            request.setAttribute("freeSpots",freeSpots );
+            
+            
+        } else {
+           ListSpots=this.spotBean.search(description, owner, place, plz, road, roadnumber, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
+           freeSpots=this.spotBean.updateSpotsDate(ListSpots, searchDate); 
+           request.setAttribute("freeSpots",freeSpots ); 
+        }
+      
 
-           request.getRequestDispatcher("/WEB-INF/app/Spot_list.jsp").forward(request, response);
+        
+        request.getRequestDispatcher("/WEB-INF/app/Spot_list.jsp").forward(request, response);
 
 
        
