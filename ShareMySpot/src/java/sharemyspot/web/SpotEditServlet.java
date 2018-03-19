@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Date;
 import javax.ejb.EJB;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -48,13 +49,24 @@ public class SpotEditServlet extends HttpServlet {
         
         User user = this.userBean.getCurrentUser(); 
         
-        // Verfügbare Kategorien für die Suchfelder ermitteln
+        // Verfügbare Kategorien und Status für die Suchfelder ermitteln
         request.setAttribute("categories", Category.values()); 
         request.setAttribute("status", SpotStatus.values());
         
         //Zu bearbeitender Parkplatz einlesen
-        HttpSession session = request.getSession();
+         Spot spot = this.getRequestedSpot(request);
         
+        request.setAttribute("spot_form", this.createSpotForm(spot));
+        request.setAttribute("owner", spot.getOwner());
+        request.setAttribute("user", this.userBean.getCurrentUser());
+     
+        // Anfrage an dazugerhörige JSP weiterleiten
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/app/spot_edit.jsp");
+        dispatcher.forward(request, response);
+     
+        // Alte Formulardaten aus der Session entfernen
+        HttpSession session = request.getSession();
+        session.removeAttribute("spot_form");
         
     }
     
@@ -116,19 +128,26 @@ public class SpotEditServlet extends HttpServlet {
             }
            }
           
-         
+          if (spotStatus != null && !spotStatus.trim().isEmpty()) {
+            try {
+                spot.setSpotStatus(SpotStatus.valueOf(spotStatus));
+            } catch (NumberFormatException ex) {
+                // Ungültige oder keine ID mitgegeben
+            }
+           }
           
           spot.setPlace(spotPlace);
           spot.setPlz(spotPlz);
           spot.setRoad(spotRoad);
-          spot.setroadNumber(Integer.parseInt(spotRoadNumber));
+          spot.setroadNumber(spotRoadNumber);
           spot.setDescription(spotDescription);
-          spot.setFreeFrom(SimpleDateFormat.parse(spotFreeFrom));
-          spot.setFreeTo(SimpleDateFormat.parse(spotFreeTo));
+          //spot.setFreeFrom(SimpleDateFormat.parse(spotFreeFrom));
+          //spot.setFreeTo(SimpleDateFormat.parse(spotFreeTo));
+          
       
           this.validationBean.validate(spot, errors);
           
-          // Weiter zur nächsten Seite
+          // Nächste Seite aufrufen
             if (errors.isEmpty()) {
             // Keine Fehler: Startseite aufrufen
             response.sendRedirect(WebUtils.appUrl(request, "/app/Startseite/"));
@@ -160,7 +179,7 @@ public class SpotEditServlet extends HttpServlet {
            this.spotBean.delete(spot);
            
            //zurück zur Übersicht
-           response.sendRedirect(WebUtils.appUrl(request, "/app/Startseite"));   
+           response.sendRedirect(WebUtils.appUrl(request, "/app/Startseite/"));   
            }
        
       /**
@@ -174,6 +193,7 @@ public class SpotEditServlet extends HttpServlet {
        private Spot getRequestedSpot(HttpServletRequest request){
            
             // Zunächst davon ausgehen, dass ein neuer Satz angelegt werden soll
+           
            Spot spot = new Spot();
            spot.setOwner(this.userBean.getCurrentUser());
            
@@ -199,6 +219,66 @@ public class SpotEditServlet extends HttpServlet {
 
         return spot;   
        }
+       
+     /**
+     * Neues FormValues-Objekt erzeugen und mit den Daten eines aus der
+     * Datenbank eingelesenen Datensatzes füllen. Dadurch müssen in der JSP
+     * keine hässlichen Fallunterscheidungen gemacht werden, ob die Werte im
+     * Formular aus der Entity oder aus einer vorherigen Formulareingabe
+     * stammen.
+     *
+     * @param spot Der zu bearbeitende Parkplatz
+     * @return Neues, gefülltes FormValues-Objekt
+     */
+       
+       private FormValues createSpotForm(Spot spot){
+           Map<String, String[]> values = new HashMap<>();
+
+        if (spot.getCategory() != null) {
+            values.put("spot_category", new String[]{
+                spot.getCategory().toString()
+            });
+        }
+        
+         if (spot.getSpotStatus() != null) {
+            values.put("spot_status", new String[]{
+                spot.getSpotStatus().toString()
+            });
+        }
+        
+        values.put("spot_place", new String[]{
+            spot.getPlace()
+            });
+                
+        values.put("spot_plz", new String[]{
+            spot.getPlz()
+           });   
+  
+        
+        values.put("spot_road", new String[]{
+            spot.getRoad()
+        });
+        
+        values.put("spot_roadNumber", new String[]{
+            spot.getroadNumber()
+        });
+        
+       values.put("spot_description", new String[]{
+            spot.getDescription()
+        }); 
+       
+       values.put("spot_FreeFrom", new String[]{
+            spot.getFreeFrom().toString()
+        });
+       
+       values.put("spot_FreeTo", new String[]{
+            spot.getFreeTo().toString()
+        });
+       
+        FormValues formValues = new FormValues();
+        formValues.setValues(values);
+        return formValues;
+    }
      
 }
     
