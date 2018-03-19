@@ -19,6 +19,7 @@ import sharemyspot.jpa.User;
  * @editor Bastian Schabbach: 11.3 wegen technischen Problemen bei Alexander B. füge Bastian 
  * die Methode changePassword hinzu und löschte aus kommentierte Methoden  ,
  * Cristian Geiger: 12.3 extends wurde von Cristian ergänzt und die Klasse darauf hin angepasst 
+ * edited Bastian Schabbach 19.03 Methoden findUser ergänzt
  */
         /**
          * Die Userbean bietet verschiedene Methoden, um als Benutzer am Benutzerprofil zu bearbeiten 
@@ -88,6 +89,12 @@ public class UserBean extends EntityBean<User, Long> {
      
      public User getCurrentUser(){
          return this.em.find(User.class, this.ctx.getCallerPrincipal().getName());
+     }
+     
+     public User findUser(String user){
+         return (User)em.createQuery("SELECT u FROM User u WHERE u.username = :user")
+                 .setParameter("user", user)
+                 .getResultList();
      }
      
      /**

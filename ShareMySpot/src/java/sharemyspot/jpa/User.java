@@ -12,12 +12,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
+import javax.ejb.Stateless;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -36,8 +35,10 @@ import javax.validation.constraints.Size;
 /**
  * Änderung 15.03.18: Becker: deutsche Bezeichnungen geändert in englische Namen
  * zugleich im Konstruktor und in deren Methoden 
- * wie z.B. vorname in firstName, nachname in lastName,telefon in phoneNumber, anschrift in adrese 
+ * wie z.B. vorname in firstName, nachname in lastName,telefon in phoneNumber, anschrift in adrese
+ * 18.03. Geiger: Listen aus Klasse entfernt
  */
+@Stateless
 @Entity
 @Table(name = "SMS_USER")
 public class User implements Serializable {
@@ -91,10 +92,7 @@ public class User implements Serializable {
     
     @Column(name = "EMAIL")
     @NotNull(message = "Die Email darf nicht leer sein")
-    private String email;
-    
-    @OneToMany(mappedBy ="owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Spot> spots = new ArrayList<>();
+    private String email;    
     
     @ElementCollection
     @CollectionTable(
@@ -105,12 +103,8 @@ public class User implements Serializable {
     @Column(name = "GROUPNAME")
     List<String> groups = new ArrayList<>();
     
-    @Column(name ="FAVOURITELIST")
-    List<Spot> favoriten = new ArrayList<>();
-    
-    
-    
-    
+    @OneToMany
+    private Spot ownSpot;
     
     
 
@@ -138,8 +132,16 @@ public class User implements Serializable {
         this.email = email;
     }
     //</editor-fold>
-            
-    //<editor-fold defaultstate="collapsed" desc="Setter und Getter">
+
+    //<editor-fold defaultstate="collapsed" desc="Getter und Setter">
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getUsername() {
         return username;
     }
@@ -148,70 +150,80 @@ public class User implements Serializable {
         this.username = username;
     }
     
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+    
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+    
     public String getLastName() {
         return lastName;
     }
     
-    public void setNachname(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+    
     public String getFirstName() {
         return firstName;
     }
-
-    public void setVorname(String fistname) {
+    
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
+    
     public String getPlace() {
         return place;
     }
-
+    
     public void setPlace(String place) {
         this.place = place;
     }
-
+    
     public String getPlz() {
         return plz;
     }
-
+    
     public void setPlz(String plz) {
         this.plz = plz;
     }
-
+    
     public String getAdresse() {
         return adresse;
     }
-
+    
     public void setAdresse(String adresse) {
         this.adresse = adresse;
     }
-
+    
     public String getPhoneNumber() {
         return phoneNumber;
     }
-
+    
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
+    
     public String getEmail() {
         return email;
     }
-
+    
     public void setEmail(String email) {
         this.email = email;
     }
     
-
-    public Long getId() {
-        return id;
+    public Spot getOwnSpot() {
+        return ownSpot;
     }
-
-    public void setId(Long id) {
-        this.id = id;
+    
+    public void setOwnSpot(Spot ownSpot) {
+        this.ownSpot = ownSpot;
     }
-    //</editor-fold>
+//</editor-fold>
+            
+    
 
     //<editor-fold defaultstate="collapsed" desc="Passwort setzen und prüfen">
     /**

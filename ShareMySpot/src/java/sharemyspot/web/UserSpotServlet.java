@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Zu Risiken und Nebenwirkungen lesen Sie die Packunsgbeilage und fragen Sie ihren Arzt oder Apotheker
  */
 package sharemyspot.web;
 
@@ -36,18 +34,9 @@ public class UserSpotServlet extends HttpServlet {
     public void doGet (HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        //verfügbare Status und Kategorien auslesen, ich bin mir unsicher, ob wir das brauchen, oder soll der Benutzer seine eigenen Plätze nach Kategorie und Status
-        //suchen können über ein Dropdown-Menü? Falls unklar ist, was ich meine, einfach mal die jTodo laufen lassen, dann wirds klarer
-        request.setAttribute("category", Category.values());
-        request.setAttribute("status", SpotStatus.values());
         
-        //username aus URL lesen
-        String searchUsername = request.getParameter("search_username");
-        
-        //Nach den Aufgaben des Eigentümers suchen
-        if (searchUsername != null) {
-            List<Spot> ownSpots = sb.findByUsername(this.ub.getCurrentUser().getUsername());
-        }
+        List<Spot> ownSpots = sb.findByUsername(this.ub.getCurrentUser().getUsername());
+        request.setAttribute("ownSpots", ownSpots);
         
         request.getRequestDispatcher("/WEB-INF/app/spot_list.jsp").forward(request, response);
     }

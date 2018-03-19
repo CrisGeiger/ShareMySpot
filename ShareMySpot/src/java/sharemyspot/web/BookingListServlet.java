@@ -8,13 +8,14 @@ package sharemyspot.web;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sharemyspot.ejb.BookingBean;
 import sharemyspot.ejb.UserBean;
+import sharemyspot.jpa.Booking;
 import  sharemyspot.jpa.User;
 
 /**
@@ -22,10 +23,12 @@ import  sharemyspot.jpa.User;
  * @author Becker
  * Servlet dient dazu die BookingListe abzurufen, wenn der User diese anfragt
  */
-@WebServlet(name = "BookingListServlet", urlPatterns = {"/BookingListServlet"})
+@WebServlet(name = "BookingListServlet", urlPatterns = {"/Bookings"})
 public class BookingListServlet extends HttpServlet {
 
     @EJB UserBean userBean;
+    
+    @EJB BookingBean bb;
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -41,7 +44,7 @@ public class BookingListServlet extends HttpServlet {
             throws ServletException, IOException {
 
         User user= this.userBean.getCurrentUser();
-        List<User> bookingList=user.getBookingList();
+        List<Booking> bookingList= bb.findBookingsByUsername(userBean.getCurrentUser().getUsername());
         String messageNoSpots="Es sind keine Parkplätze gebucht.";
         
         if(bookingList!=null){
@@ -50,7 +53,7 @@ public class BookingListServlet extends HttpServlet {
         else{
             request.setAttribute("messageNoSpots",messageNoSpots);
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/app/SpotList.jsp");
+        request.getRequestDispatcher("/WEB-INF/app/Bookings.jsp").forward(request, response);
         
     }
 }

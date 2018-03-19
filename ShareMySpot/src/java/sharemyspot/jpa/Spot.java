@@ -7,6 +7,7 @@ package sharemyspot.jpa;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.ejb.Stateless;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,8 +31,10 @@ import javax.validation.constraints.Size;
 //Konstruktor angepasst und Getter und Setter hinzugefügt
 /** Änderung 15.03.18: Becker: Die Variablen Ort zu Place und Beschreibung zu Descrption abgeändert zusätzlich auch in deren Methoden und im Konstruktor 
  *  Die Anschrift wurde aufgeteilt in ROAD und roadNumber und dazu neue Methoden hinzugefügt und im Konstruktor eingearbeitet 
+ * 18.03. Geiger: Klasse Daten ausgelagert in Booking Class
  * 
  */
+@Stateless
 @Entity
 @Table(name = "SMS_SPOT")
 public class Spot implements Serializable{
@@ -55,17 +58,17 @@ public class Spot implements Serializable{
     @Column(name = "POSTALNUMBER", length = 5)
     @NotNull
     @Size(min = 5, max = 5, message = "Die PLZ muss 5 Zeichen lang sein")
-    private int plz;
+    private String plz;
     
     @Column(name = "ROAD", length = 64)
     @NotNull
-    @Size(min = 5, max = 64, message = "Straße musss zw. 5 und 64 Zeichen lang sein")
+    @Size(min = 5, max = 64, message = "Straße muss zw. 5 und 64 Zeichen lang sein")
     private String road;
     
     @Column (name ="ROADNUMBER", length= 3)
     @NotNull
     @Size(min =1,max = 3,message ="Die Hausnummer muss zw. 1 und 3 Zeichen lanf sein")
-    private int roadNumber;
+    private String roadNumber;
     
     @Column(name = "DESCRIPTION", length = 128)
     @NotNull
@@ -80,14 +83,14 @@ public class Spot implements Serializable{
     @NotNull
     private Category category = Category.CAR;
     
-    @Column(name = "FAVORIT")
-    private Boolean favorite = false;
+    @Temporal(TemporalType.DATE)
+    Date freeFrom = new Date();
     
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date freeFrom = new Date();
+    @Temporal(TemporalType.DATE)
+    Date freeTo = new Date();
+    
+    
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date freeTo = new Date();
     
     
 
@@ -95,7 +98,7 @@ public class Spot implements Serializable{
     public Spot() {
     }
 
-    public Spot(User owner, String place, int plz, String road,int roadNumber, String description,Category category, boolean favorite, Date freeFrom, Date freeTo) {
+    public Spot(User owner, String place, String plz, String road, String roadNumber, String description,Category category) {
         this.owner = owner;
         this.category = category;
         this.plz = plz;
@@ -103,9 +106,7 @@ public class Spot implements Serializable{
         this.road = road;
         this.roadNumber=roadNumber;
         this.description = description;
-        this.favorite = favorite;
-        this.freeFrom = freeFrom;
-        this.freeTo = freeTo;
+        
     }
     //</editor-fold>
 
@@ -142,19 +143,19 @@ public class Spot implements Serializable{
         this.road = road;
     }
     
-    public void setroadNumber(int roadNumber){
+    public void setroadNumber(String roadNumber){
         this.roadNumber=roadNumber;
     }
     
-    public int getroadNumber(){
+    public String getroadNumber(){
         return roadNumber;
     }
     
-    public int getPlz(){
+    public String getPlz(){
         return plz;
     }
     
-    public void setPlz(int plz){
+    public void setPlz(String plz){
         this.plz = plz;
     }
     
@@ -174,12 +175,12 @@ public class Spot implements Serializable{
         this.category = category;
     }
     
-    public Boolean getFavorite(){
-        return favorite;
+    public SpotStatus getSpotStatus() {
+        return status;
     }
     
-    public void setFavorite(Boolean favorite){
-        this.favorite = favorite;
+    public void setSpotStatus(SpotStatus status) {
+        this.status = status;
     }
     
     public Date getFreeFrom() {
