@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Zu Risiken und Nebenwirkungen lesen Sie die Packunsgbeilage und fragen Sie ihren Arzt oder Apotheker
  */
 package sharemyspot.web;
 
@@ -44,7 +42,7 @@ public class UserSpotServlet extends HttpServlet {
         //username aus URL lesen
         String searchUsername = request.getParameter("search_username");
         
-        //Nach den Aufgaben des Eigentümers suchen
+        //Nach den Spots des Eigentümers suchen
         if (searchUsername != null) {
             List<Spot> ownSpots = sb.findByUsername(this.ub.getCurrentUser().getUsername());
         }
