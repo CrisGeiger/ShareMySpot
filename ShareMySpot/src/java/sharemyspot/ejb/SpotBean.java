@@ -22,6 +22,7 @@ import sharemyspot.jpa.User;
  *
  * @author JU_FI
  * @editor Becker
+ * 18.3: Geiger Methode updateSearch() gelöscht
  *
  * Einfache EJB mit den üblichen CRUD-Methoden für Parkplätze.
  */
@@ -108,21 +109,9 @@ public class SpotBean extends EntityBean<Spot, Long> {
         return em.createQuery(query).getResultList();
     }
     
-    //Änderung 14.03.18:Geiger: Methode updateSearch hinzugefügt
-    //Methode die eine neue Liste mit nur Verfügbaren Parkplätzen liefert
-    //Ich bin mir nicht sicher ob diese Methode in die Spot-Klasse muss, bitte prüfen!
-    public List<Spot> updateSearch(List<Spot> spots, Date freeFrom, Date freeTo) {
-        List<Spot> updatedList = new ArrayList<>();
-            for (Spot s : spots) {
-                if (s.getFreeFrom().before(freeTo) && s.getFreeTo().after(freeFrom)) {
-                    updatedList.add(s);
-                    
-                }
-            }
-            
-        return updatedList;
+    
      
-    }
+    
 }
     
     

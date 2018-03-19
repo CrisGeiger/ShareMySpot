@@ -136,9 +136,9 @@ public class SearchServlet extends HttpServlet {
         List<Spot> ListSpots;
         List<Spot> freeSpots;
          if (errors.isEmpty()) {
-            ListSpots=this.spotBean.search(description, username,place,plz,adresse, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
-            freeSpots=this.spotBean.updateSearch( ListSpots,dueStartDate, dueEndDate); 
-            request.setAttribute("freeSpots",freeSpots );
+           // ListSpots=this.spotBean.search(description, username,place,plz,adresse, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
+            //freeSpots=this.spotBean.updateSearch( ListSpots,dueStartDate, dueEndDate); 
+            //request.setAttribute("freeSpots",freeSpots );
         }
 
         // Weiter zur nächsten Seite
