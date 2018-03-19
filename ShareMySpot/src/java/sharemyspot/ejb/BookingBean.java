@@ -11,6 +11,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import sharemyspot.jpa.Booking;
 import sharemyspot.jpa.Spot;
+import sharemyspot.jpa.SpotStatus;
 import sharemyspot.jpa.User;
 
 /**
@@ -49,6 +50,7 @@ public class BookingBean extends EntityBean <Booking, Long> {
         if (bool1 && bool2) {
             Booking newBook = new Booking(startDate, endDate, user, spot);
             saveNew(newBook);
+            spot.setSpotStatus(SpotStatus.BOOKED);
             return newBook;
         }
         

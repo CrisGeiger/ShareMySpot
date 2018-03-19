@@ -5,7 +5,6 @@
  */
 package sharemyspot.ejb;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -15,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import sharemyspot.jpa.Category;
 import sharemyspot.jpa.Spot;
-import sharemyspot.jpa.SpotStatus;
 import sharemyspot.jpa.User;
 
 /**
@@ -60,7 +58,7 @@ public class SpotBean extends EntityBean<Spot, Long> {
     *von Deklaration Spot und street als Parameter hinzugefügt  
     * - Bezeichnung ort zu place und search zu description in der gesamten Methode wurde abgeändert.
     */
-      public List<Spot> search(String description, User owner, String place, String plz,String street, SpotStatus status, Category category){
+      public List<Spot> search(String description, User owner, String place, String plz, String road, String roadnumber, Category category){
         
         //Hilfsojekt zum Bauen der Query
             CriteriaBuilder cd = this.em.getCriteriaBuilder();
@@ -79,11 +77,7 @@ public class SpotBean extends EntityBean<Spot, Long> {
         if (category != null){
             query.where(cd.equal(from.get("category"), category));
         }
-        
-        //Suche nach Status
-        if (status != null){
-            query.where(cd.equal(from.get("status"), status));
-        }
+     
         
         //Suche nach Eigentümer
         if (owner != null){
@@ -101,8 +95,13 @@ public class SpotBean extends EntityBean<Spot, Long> {
         }
         //Änderung 15.03.18: Becker: street als zu seuchender Weg hinzugefügt
         //Suche nach Street
-        if (street != null){  
-            query.where(cd.equal(from.get("street"), street));
+        if (road != null){  
+            query.where(cd.equal(from.get("road"), road));
+        }
+        
+        //Suche nach Hausnummer
+        if(roadnumber != null) {
+            query.where(cd.equal(from.get("roadnumber"), roadnumber));
         }
         
         
@@ -110,6 +109,19 @@ public class SpotBean extends EntityBean<Spot, Long> {
     }
     
     
+      
+      
+    
+    //Methode um alle verfügbaren Spots anzuzeigen
+    public List<Spot> updateSpots(List<Spot> spots) {
+        
+        for (Spot s : spots) {
+            
+        }
+        
+        return spots;
+    }
+        
      
     
 }

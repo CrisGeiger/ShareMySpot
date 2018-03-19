@@ -18,21 +18,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sharemyspot.ejb.SpotBean;
+import sharemyspot.ejb.UserBean;
 import sharemyspot.ejb.ValidationBean;
 import sharemyspot.jpa.Category;
 import sharemyspot.jpa.Spot;
 import sharemyspot.jpa.SpotStatus;
+import sharemyspot.jpa.User;
 
 
 /**
  * Das Servlet ermöglicht nach beliebigen Vorgaben Spots zu suchen, die nicht reseriert sind. Es gibt keine extra Suche deshalb, um nochmal seperat für die Buchung Suchen zu können. Da es die Benutzerfreundlichkeit wegen vielleicht doppelten Suchen  nur senken würde.
  * @author Alexander Becker
  */
-@WebServlet(name = "SearchServlet", urlPatterns = {"/SearchServlet"})
+@WebServlet(name = "SearchServlet", urlPatterns = {"/Spots"})
 public class SpotListServlet extends HttpServlet {
 
     @EJB
     SpotBean spotBean;
+    
+    @EJB
+    UserBean userBean;
     
     @EJB
     ValidationBean validationBean;
@@ -66,31 +71,31 @@ public class SpotListServlet extends HttpServlet {
         
         // Anfrage erfährt, welche Option es zu wählen gibt in den zwei Enums 
         request.setAttribute("categories", Category.values());
-        request.setAttribute("spotStatus", SpotStatus.values());
+        
         
         // doGet empfängt die Eingaben und hinterlegt diese in den neuen Variablen
         String startDate=request.getParameter("search_startDate");
-        String startTime=request.getParameter("search_startTime");
+        
         String endDate=request.getParameter("search_endDate");
-        String endTime=request.getParameter("search_endTime");
-        String place=request.getParameter("search_place");
-        String plz=request.getParameter("search_plz");
-        String adresse=request.getParameter("search_adresse"); // Abändern, wenn Attribute street vorhanden
-        String kategoryStatus=request.getParameter("search_category");
-        //String spotVariante=request.getParameter("search_spotStatus");
-        String description=request.getParameter("search_description");
-        String username=request.getParameter("search_owner");
+       
+        String place = request.getParameter("search_place");
+        String plz = request.getParameter("search_plz");
+        String road = request.getParameter("search_road");
+        String roadnumber = request.getParameter("search_roadnumber");
+        String kategoryStatus = request.getParameter("search_category");
+        String description = request.getParameter("search_description");
+        String searchOwner = request.getParameter("search_owner");
         
         // Das eingegbene Datum und die eingegbene Zeit wird versucht in die vorgegebene Form umzuwandeln
         Date dueStartDate = WebUtils.parseDate(startDate);
-        Time dueStartTime = WebUtils.parseTime(startTime);
+        
         
         Date dueEndDate = WebUtils.parseDate(endDate);
-        Time dueEndTime = WebUtils.parseTime(endTime);
+        
         
         // Diese Hilfsvariablen dienen dazu, die ausgewählten Values des Enums zu prüfen  
         Category category=null;
-        SpotStatus spotStatus=null;
+        User owner = null;
         
         
         if (kategoryStatus != null) {
@@ -101,63 +106,27 @@ public class SpotListServlet extends HttpServlet {
             }
         }
         
-        /**   if (spotVariante != null) {
+        if (searchOwner != null) {
             try {
-                spotStatus = SpotStatus.valueOf(spotVariante);
+                owner = this.userBean.findUser(searchOwner);
             } catch (IllegalArgumentException ex) {
-                spotStatus = null;
+                owner = null;
             }
         }
-        */
-        /**Spot spot = new Spot(username, place, plz,adresse,description,category,favorite);
-        *List<String> errors = this.validationBean.validate(spot);
-        this.validationBean.validate(spot, errors);
-        */
+       
+       
     
-        // Erstellen einer Fehlerliste zum Speichern der Fehler, die am Ende sobald welche existieren ausgegeben werden in einer JSP.
-             List <String>errors = new ArrayList(); // Anwender wird verpflicht egal bei welcher Suche mindestends einen richtigen Zeitraum anzugeben. Das ermöglicht, dass dieser sich ein Gesamtbild des Angebots an Parkplätzen unseres Service anschauen kann
-         if (dueStartDate==null) {
-            errors.add("Das Datum muss dem Format dd.mm.yyyy entsprechen.");
-         }
-         if (dueEndDate==null) {
-            errors.add("Das Datum muss dem Format dd.mm.yyyy entsprechen.");
-         }
-         
-        /** if (dueStartTime==null) {
-            errors.add("Das Uhrzeit muss dem Format hh.mm.ss entsprechen.");
-         }
-         
-         if (dueEndTime==null) {
-            errors.add("Das Uhrzeit muss dem Format hh.mm.ss entsprechen.");
-         }
-         */
+      
 
         // Die Liste freeSpots empfängt die Ergebnisse, die den Vorgaben der Suche (search) entsprechen. 
         List<Spot> ListSpots;
         List<Spot> freeSpots;
-         if (errors.isEmpty()) {
-           // ListSpots=this.spotBean.search(description, owner,place,plz,adresse, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
-            //freeSpots=this.spotBean.updateSearch( ListSpots,dueStartDate, dueEndDate); 
-            //request.setAttribute("freeSpots",freeSpots );
-        }
+           ListSpots=this.spotBean.search(description, owner, place, plz, road, roadnumber, category); // die Zeit und das Datum müssen noch in Spot und SpotBean abgeändert werden.
+           freeSpots=this.spotBean.updateSpots(ListSpots); 
+           request.setAttribute("freeSpots",freeSpots );
 
-        // Weiter zur nächsten Seite
-        if (errors.isEmpty()) {
-            // Keine Fehler: neue Seite aufrufen
-            // Anfrage an die JSP weiterleiten
-            request.getRequestDispatcher("/WEB-INF/app/Spot_list.jsp").forward(request, response);
-        } else {
-            // Fehler: Formuler erneut anzeigen
-            FormValues formValues = new FormValues();
-            formValues.setValues(request.getParameterMap());
-            formValues.setErrors(errors);
+           request.getRequestDispatcher("/WEB-INF/app/Spot_list.jsp").forward(request, response);
 
-            HttpSession session = request.getSession();
-            session.setAttribute("spotList_form", formValues);// dient als Zwischenspeicher der Fehler
-            request.setAttribute("session",session);
-            // Anfrage mit Fehler an die JSP weiterleiten
-            request.getRequestDispatcher("/WEB-INF/app/Spot_list.jsp").forward(request, response);
-        }
 
        
         
