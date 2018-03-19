@@ -7,13 +7,16 @@ package sharemyspot.web;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import sharemyspot.ejb.SpotBean;
 import sharemyspot.ejb.UserBean;
 import sharemyspot.ejb.ValidationBean;
@@ -48,6 +51,12 @@ public class SpotEditServlet extends HttpServlet {
         
         // Verfügbare Kategorien für die Suchfelder ermitteln
         request.setAttribute("categories", this.categoryBean.findAllSorted());
+        
+        //Zu bearbeitender Parkplatz einlesen
+        
+        HttpSession session = request.getSession();
+        
+        
     }
     
     @Override
@@ -155,6 +164,51 @@ public class SpotEditServlet extends HttpServlet {
 
         return spot;   
        }
+       
+       /**
+     * Neues FormValues-Objekt erzeugen und mit den Daten eines aus der
+     * Datenbank eingelesenen Datensatzes füllen. Dadurch müssen in der JSP
+     * keine hässlichen Fallunterscheidungen gemacht werden, ob die Werte im
+     * Formular aus der Entity oder aus einer vorherigen Formulareingabe
+     * stammen.
+     *
+     * @param spot Der zu bearbeitende Parkplatz
+     * @return Neues, gefülltes FormValues-Objekt
+     */
+    private FormValues createSpotForm(Spot spot) {
+        Map<String, String[]> values = new HashMap<>();
+
+        if (spot.getCategory() != null) {
+            values.put("spot_category", new String[]{
+                spot.getCategory().toString()
+            });
+        }
+        
+       values.put("spot_place", new String[]{
+            spot.getPlace()
+        });
+
+        values.put("spot_road", new String[]{
+            spot.getRoad()
+        });
+
+        values.put("spot_roadNumer", new String[]{
+            spot.getroadNumber()
+        });
+
+        values.put("spot_plz", new String[]{
+            spot.getPlz()
+        });
+
+        values.put("spot_description", new String[]{
+            spot.getDescription()
+        });
+
+
+        FormValues formValues = new FormValues();
+        formValues.setValues(values);
+        return formValues;
+    }
 }
     
 
