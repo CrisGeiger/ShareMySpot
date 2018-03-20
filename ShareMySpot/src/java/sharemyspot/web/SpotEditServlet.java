@@ -49,10 +49,6 @@ public class SpotEditServlet extends HttpServlet {
         
         User user = this.userBean.getCurrentUser(); 
         
-        // Verfügbare Kategorien und Status für die Suchfelder ermitteln
-        request.setAttribute("categories", Category.values()); 
-        request.setAttribute("status", SpotStatus.values());
-        
         //Zu bearbeitender Parkplatz einlesen
          Spot spot = this.getRequestedSpot(request);
         
