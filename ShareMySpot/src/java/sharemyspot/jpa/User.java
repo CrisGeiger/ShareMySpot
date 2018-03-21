@@ -82,9 +82,13 @@ public class User implements Serializable {
     @NotNull(message = "Die Postleitzahl darf nicht leer sein")
     private String plz;
     
-    @Column(name = "Adresse")
+    @Column(name = "ROAD")
     @NotNull(message = "Die Straße darf nicht leer sein")
-    private String adresse;
+    private String road;
+    
+    @Column(name = "ROADNUMBER")
+    @NotNull(message = "Die Hausnummer darf nicht leer sein")
+    private String roadnumber;
     
     @Column(name = "PHONENUMBER")
     @NotNull(message = "Die Telefonnummer darf nicht leer sein")
@@ -119,7 +123,7 @@ public class User implements Serializable {
         this.passwordHash = this.hashPassword(password);
     }
     
-    public User(String username, String password, String lastName, String firstName, String place, String plz, String road, String phoneNumber, String email) {
+    public User(String username, String password, String lastName, String firstName, String place, String plz, String road, String roadnumber, String phoneNumber, String email) {
         this.username = username;
         this.password.password = password;
         this.passwordHash = this.hashPassword(password);
@@ -127,7 +131,8 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.place = place;
         this.plz = plz;
-        this.adresse = adresse;
+        this.road = road;
+        this.roadnumber = roadnumber;
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
@@ -190,12 +195,20 @@ public class User implements Serializable {
         this.plz = plz;
     }
     
-    public String getAdresse() {
-        return adresse;
+    public String getRoad() {
+        return road;
     }
     
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
+    public void setRoad(String road) {
+        this.road = road;
+    }
+    
+    public String getRoadnumber() {
+        return roadnumber;
+    }
+    
+    public void setRoadnumber(String roadnumber) {
+        this.roadnumber = roadnumber;
     }
     
     public String getPhoneNumber() {

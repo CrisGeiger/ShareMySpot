@@ -7,6 +7,8 @@ package sharemyspot.web;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,14 +46,17 @@ public class BookingListServlet extends HttpServlet {
             throws ServletException, IOException {
 
         User user= this.userBean.getCurrentUser();
-        List<Booking> bookingList= bb.findBookingsByUsername(userBean.getCurrentUser().getUsername());
-        String messageNoSpots="Es sind keine Parkplätze gebucht.";
+        List<Booking> bookingList= bb.findBookingsByUsername(user.getUsername());
         
         if(bookingList!=null){
          request.setAttribute("bookingList",bookingList);   
         }
         else{
-            request.setAttribute("messageNoSpots",messageNoSpots);
+            try {
+                throw new Exception();
+            } catch (Exception ex) {
+      
+            }
         }
         request.getRequestDispatcher("/WEB-INF/app/Bookings.jsp").forward(request, response);
         

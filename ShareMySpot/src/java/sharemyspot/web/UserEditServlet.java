@@ -69,7 +69,8 @@ public class UserEditServlet extends HttpServlet {
         String password2 = request.getParameter("signup_password2");
         String lastName = request.getParameter("signup_lastName");
         String firstName = request.getParameter("signup_firstName");
-        String adresse = request.getParameter("signup_adresse");
+        String road = request.getParameter("signup_road");
+        String roadnumber = request.getParameter("signup_roadnumber");
         String plz = request.getParameter("signup_plz");
         String place = request.getParameter("signup_place");
         String phoneNumber= request.getParameter("signup_phoneNumber");
@@ -84,7 +85,7 @@ public class UserEditServlet extends HttpServlet {
 //        }
         
         // Eingaben prüfen
-        User user = new User(username, password1, lastName, firstName, place, plz, adresse, phoneNumber, email);
+        User user = new User(username, password1, lastName, firstName, place, plz, road, roadnumber, phoneNumber, email);
         List<String> errors = this.validationBean.validate(user);
         this.validationBean.validate(user.getPassword(), errors);
         
@@ -143,8 +144,12 @@ public class UserEditServlet extends HttpServlet {
             "default"
         });
 
-        values.put("edit_adresse", new String[]{
-            user.getAdresse()
+        values.put("edit_road", new String[]{
+            user.getRoad()
+        });
+        
+        values.put("edit_roadnumber", new String[]{
+            user.getRoadnumber()
         });
 
         values.put("edit_plz", new String[]{
