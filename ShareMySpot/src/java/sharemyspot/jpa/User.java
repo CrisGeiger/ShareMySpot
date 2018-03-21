@@ -88,7 +88,7 @@ public class User implements Serializable {
     
     @Column(name = "ROADNUMBER")
     @NotNull(message = "Die Hausnummer darf nicht leer sein")
-    private String roadnumber;
+    private String roadNumber;
     
     @Column(name = "PHONENUMBER")
     @NotNull(message = "Die Telefonnummer darf nicht leer sein")
@@ -123,7 +123,7 @@ public class User implements Serializable {
         this.passwordHash = this.hashPassword(password);
     }
     
-    public User(String username, String password, String lastName, String firstName, String place, String plz, String road, String roadnumber, String phoneNumber, String email) {
+    public User(String username, String password, String lastName, String firstName, String place, String plz, String road, String roadNumber, String phoneNumber, String email) {
         this.username = username;
         this.password.password = password;
         this.passwordHash = this.hashPassword(password);
@@ -132,7 +132,7 @@ public class User implements Serializable {
         this.place = place;
         this.plz = plz;
         this.road = road;
-        this.roadnumber = roadnumber;
+        this.roadNumber = roadNumber;
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
@@ -204,11 +204,11 @@ public class User implements Serializable {
     }
     
     public String getRoadnumber() {
-        return roadnumber;
+        return roadNumber;
     }
     
     public void setRoadnumber(String roadnumber) {
-        this.roadnumber = roadnumber;
+        this.roadNumber = roadNumber;
     }
     
     public String getPhoneNumber() {
