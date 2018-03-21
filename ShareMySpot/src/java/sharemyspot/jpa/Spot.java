@@ -24,7 +24,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author Budda
+ * @author Schabbach
  * 
  */
 //geändert am 14.03. von Cristian Geiger: Zwei Zeitvariablen zur Bestimmung wann ein Parkplatz zur Verfügung steht eingefügt 
@@ -32,7 +32,7 @@ import javax.validation.constraints.Size;
 /** Änderung 15.03.18: Becker: Die Variablen Ort zu Place und Beschreibung zu Descrption abgeändert zusätzlich auch in deren Methoden und im Konstruktor 
  *  Die Anschrift wurde aufgeteilt in ROAD und roadNumber und dazu neue Methoden hinzugefügt und im Konstruktor eingearbeitet 
  * 18.03. Geiger: Klasse Daten ausgelagert in Booking Class
- * 
+ * edited Schabbach /21.03.2018/ roadnumber, plz zu String geändert
  */
 @Stateless
 @Entity

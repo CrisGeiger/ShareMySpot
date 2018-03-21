@@ -30,8 +30,10 @@ import sharemyspot.jpa.SpotStatus;
 /**
  *
  * @author JU_FI
+ * edited Schabbach /21.03.2018/ url patterns an Projekt-URLs angepasst
+ * 
  */
-@WebServlet(name = "SpotEditServlet", urlPatterns = {"/SpotEditServlet"})
+@WebServlet(name = "SpotEditServlet", urlPatterns = {"/Spot_edit"})
 public class SpotEditServlet extends HttpServlet {
 
     @EJB
@@ -146,7 +148,7 @@ public class SpotEditServlet extends HttpServlet {
           // Nächste Seite aufrufen
             if (errors.isEmpty()) {
             // Keine Fehler: Startseite aufrufen
-            response.sendRedirect(WebUtils.appUrl(request, "/app/Startseite/"));
+            response.sendRedirect(WebUtils.appUrl(request, "/app/Spots/"));
         } else {
             // Fehler: Formuler erneut anzeigen
             FormValues formValues = new FormValues();
@@ -175,7 +177,7 @@ public class SpotEditServlet extends HttpServlet {
            this.spotBean.delete(spot);
            
            //zurück zur Übersicht
-           response.sendRedirect(WebUtils.appUrl(request, "/app/Startseite/"));   
+           response.sendRedirect(WebUtils.appUrl(request, "/app/Spots/"));   
            }
        
       /**

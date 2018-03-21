@@ -7,9 +7,10 @@ package sharemyspot.web;
 
 /**
  *
- * @author Budda
+ * @author Schabbach
  * Änderung 15.03.18: Becker: Bezeichnungen von ort,anschrift,
  * telefon,vorname,nachname zu englischen Begriffen umgewandelt 
+ * edited Schabbach /21.03.2018/ Konstruktoren und Registration an Entity und Bean-Klasse angepasst
  */
 
 import java.io.IOException;
@@ -64,7 +65,8 @@ public class SignUpServlet extends HttpServlet {
         String password2 = request.getParameter("signup_password2");
         String lastName = request.getParameter("signup_lastname");
         String firstName = request.getParameter("signup_firstname");
-        String adresse = request.getParameter("signup_adresse");
+        String road = request.getParameter("signup_road");
+        String roadnumber = request.getParameter("signup_roadnumber");
         String plz = request.getParameter("signup_plz");
         String place = request.getParameter("signup_place");
         String phoneNumber = request.getParameter("signup_phonenumber");
@@ -79,7 +81,7 @@ public class SignUpServlet extends HttpServlet {
         }*/
         
         // Eingaben prüfen
-        User user = new User(username, password1, lastName, firstName,place, plz,adresse, phoneNumber, email);
+        User user = new User(username, password1, lastName, firstName, place, plz, road, roadnumber, phoneNumber, email);
         List<String> errors = this.validationBean.validate(user);
         this.validationBean.validate(user.getPassword(), errors);
         
@@ -90,7 +92,7 @@ public class SignUpServlet extends HttpServlet {
         // Neuen Benutzer anlegen
         if (errors.isEmpty()) {
             try {
-                this.userBean.registration(username, password1, password2, lastName, firstName, place, plz, adresse, phoneNumber, email);
+                this.userBean.registration(username, password1, password2, lastName, firstName, place, plz, road, roadnumber, phoneNumber, email);
             } catch (UserBean.UsernameException ex) {
                 errors.add(ex.getMessage());
             }
