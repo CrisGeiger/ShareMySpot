@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import sharemyspot.ejb.BookingBean;
 import sharemyspot.ejb.SpotBean;
 import sharemyspot.ejb.UserBean;
 import sharemyspot.ejb.ValidationBean;
@@ -31,6 +32,7 @@ import sharemyspot.jpa.SpotStatus;
  *
  * @author JU_FI
  * edited Schabbach /21.03.2018/ url patterns an Projekt-URLs angepasst
+ * edited Schabbach /21.03.2018/ bookSpot hinzugefügt
  * 
  */
 @WebServlet(name = "SpotEditServlet", urlPatterns = {"/Spot_edit"})
@@ -41,6 +43,9 @@ public class SpotEditServlet extends HttpServlet {
     
     @EJB
     UserBean userBean;
+    
+    @EJB
+    BookingBean bookingBean;
     
     @EJB
     ValidationBean validationBean; 
@@ -88,6 +93,9 @@ public class SpotEditServlet extends HttpServlet {
             case "delete":
                 this.deleteSpot(request, response);
                 break;
+            case "book":
+                this.bookSpot(request, response);
+                break;     
         }
         
     }
@@ -175,6 +183,35 @@ public class SpotEditServlet extends HttpServlet {
            //Datensatz löschen 
            Spot spot = this.getRequestedSpot(request);
            this.spotBean.delete(spot);
+           
+           //zurück zur Übersicht
+           response.sendRedirect(WebUtils.appUrl(request, "/app/Spots/"));   
+           }
+       
+       /**
+        * Vorhandener Spot buchen
+        * @param request
+        * @param response
+        * @throws ServletException
+        * @throws IOException 
+        */
+       private void bookSpot(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+           
+           
+           String searchStartDate = request.getParameter("search_startDate");
+           String searchEndDate = request.getParameter("search_endDate");
+           
+           Date startDate = WebUtils.parseDate(searchStartDate);
+           Date endDate = WebUtils.parseDate(searchEndDate);
+           
+           Spot spot = this.getRequestedSpot(request);
+           User user = this.userBean.getCurrentUser();
+           
+           if (spot.getOwner() != user){
+                this.bookingBean.book(startDate, endDate, user, spot); 
+           }
+           
            
            //zurück zur Übersicht
            response.sendRedirect(WebUtils.appUrl(request, "/app/Spots/"));   
