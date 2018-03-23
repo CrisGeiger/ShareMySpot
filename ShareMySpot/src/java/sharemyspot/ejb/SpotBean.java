@@ -49,14 +49,13 @@ public class SpotBean extends EntityBean<Spot, Long> {
      * @param owner
      * @param place
      * @param plz 
-     * @param status
+     * @param road
+     * @param roadnumber
      * @param category
      * @param description
      * @return Liste mit den gefundenen Parkplätzen
-     */
-    
-    
-    /**Änderung 15.03.18: Becker: - Deklaratioin der Parameter place,plz der Methode search geändert
+     *
+    *Änderung 15.03.18: Becker: - Deklaratioin der Parameter place,plz der Methode search geändert
     *von Deklaration Spot und street als Parameter hinzugefügt  
     * - Bezeichnung ort zu place und search zu description in der gesamten Methode wurde abgeändert.
     */
