@@ -17,7 +17,7 @@ public enum Category {
             case CAR:
                 return "Auto";
             case MOTORCYCLE:
-                return "Motorad";
+                return "Motorrad";
             default:
                 return this.toString();
         }
