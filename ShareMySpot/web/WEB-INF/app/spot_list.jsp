@@ -3,6 +3,12 @@
     Created on : 25.03.2018, 12:00:59
     Author     : cgeiger1
 --%>
+<%-- 
+    Document   : spot_list
+    Changed on : 28.03.2018, 17:09:32
+    Editor     : BeckerA
+    Die Kategory als Ausgabefeld nach der Suche hinzugefügt. Da es gefehlt hat.
+--%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib tagdir="ShareMySpot/WEB-INF/tags/templates" prefix="template"%>
@@ -51,6 +57,7 @@
                             <th>Hausnummer</th>
                             <th>Besitzer</th>
                             <th>Status</th>
+                            <th>Kategorie</th>
                         </tr>
                     </thead>
                     <c:forEach items="${spots}" var="spot">
@@ -77,6 +84,9 @@
                             </td>
                             <td>
                                 <c:out value="${spot.status.label}"/>
+                            </td>
+                            <td>                      
+                                <c:out value="${spot.category.label}"/>
                             </td>
                         </tr>
                     </c:forEach>
